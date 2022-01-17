@@ -16,7 +16,10 @@ public slots:
     void processFrame(QVideoFrame frame);
 
 signals:
-    void frameProcessed(QVector<double>);
+    void frameProcessed(QVector<double>,QVector<double>);
+
+private:
+    QVector<double> m_previousGraphDerivative;
 
 };
 
@@ -32,11 +35,10 @@ public:
 public slots:
     void processFrame(const QVideoFrame &frame);
     void refreshCounter();
-    void frameReady(QVector<double>);
 
 signals:
+    void frameReady(QVector<double>, QVector<double>);
     void updatelineedit(int);
-    void sendGraph(QVector<double>);
 
 private:
     qint32 m_fpsCounter;
