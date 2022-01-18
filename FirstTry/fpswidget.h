@@ -12,11 +12,13 @@ class FrameProcessor : public QObject
 {
     Q_OBJECT
 
+public:
+    FrameProcessor(QObject *parent = nullptr);
 public slots:
     void processFrame(QVideoFrame frame);
 
 signals:
-    void frameProcessed(QVector<double>,QVector<double>);
+    void frameProcessed(QVector<double>,QVector<double>,QVector<double>, int);
 
 private:
     QVector<double> m_previousGraphDerivative;
@@ -37,7 +39,7 @@ public slots:
     void refreshCounter();
 
 signals:
-    void frameReady(QVector<double>, QVector<double>);
+    void frameReady(QVector<double>, QVector<double>, QVector<double>, int);
     void updatelineedit(int);
 
 private:

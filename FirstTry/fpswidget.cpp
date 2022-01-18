@@ -13,7 +13,7 @@ FPSWidget::FPSWidget(QLabel *parent)
     m_processor.moveToThread(&m_processorThread);
     qRegisterMetaType<QVector<double>>("QVector<double>");
     //connect(&m_processor, &FrameProcessor::frameProcessed, this, &FPSWidget::frameReady);
-    connect(&m_processor, SIGNAL(frameProcessed(QVector<double>, QVector<double>)), this, SIGNAL(frameReady(QVector<double>, QVector<double>)));
+    connect(&m_processor, SIGNAL(frameProcessed(QVector<double>, QVector<double>,QVector<double>, int)), this, SIGNAL(frameReady(QVector<double>, QVector<double>, QVector<double>, int)));
     m_processorThread.start(QThread::LowestPriority);
 
     QTimer *timer = new QTimer(this);
@@ -91,6 +91,9 @@ void FrameProcessor::processFrame(QVideoFrame frame)
     QVector<double> graphBWA(widthOfZone);
     QVector<double> graphDerivative(graphBWA.size() - 1);
     QVector<double> graphDiscrepancy(graphDerivative.size()*2);
+    QVector<double> cutDiscrepancy(graphDerivative.size());
+    int indOfMinCut;
+    int shiftOfDis;
     do
     {
         if(!frame.map(QAbstractVideoBuffer::ReadOnly))
@@ -113,21 +116,28 @@ void FrameProcessor::processFrame(QVideoFrame frame)
 
             }
 
-//            for(int counter = 0; counter < graphBWA.size(); counter++)
-//            {
-//                graphBWA[counter] = graphBWA[counter];
-//            }
 
 
             int sizeBWA = graphBWA.size();
             for(int counter = 0; counter < sizeBWA - 1; counter++)
             {
                 double delta = graphBWA[counter + 1] - graphBWA[counter];
-                if(delta < 0)
-                    graphDerivative[counter] = -(delta);
-                else
+
+
+
+
+//                if(delta < 0)
+//                    graphDerivative[counter] = -(delta);
+//                else
                     graphDerivative[counter] = delta;
             }
+
+//            for(int counter = 0; counter < graphBWA.size() - 1;counter++)
+//            {
+//                graphDerivative[counter] = pow(2.71, -(counter-450)*(counter-450)/(2500));
+//                //graphDerivative[counter] = counter%((graphBWA.size()-1)/2);
+//                m_previousGraphDerivative[counter] = pow(2.71, -(counter-500)*(counter-500)/(2500));
+//            }
 
 
             if(!m_previousGraphDerivative.isEmpty())
@@ -136,20 +146,46 @@ void FrameProcessor::processFrame(QVideoFrame frame)
                 {
                     if(shift<0)
                     {
-                        for(int i = 0 ; i < graphDerivative.size() + shift; i++)
+                        for(int i = 0 ; i < graphDerivative.size(); i++)
                         {
-                            graphDiscrepancy[shift+graphDerivative.size()] = (m_previousGraphDerivative[i] - graphDerivative[i - shift])*(m_previousGraphDerivative[i] - graphDerivative[i - shift]);
+                            if((i+shift)>0 && (i+shift)<graphDerivative.size())
+                                graphDiscrepancy[shift+graphDerivative.size()] += (m_previousGraphDerivative[i] - graphDerivative[i + shift])  *  (m_previousGraphDerivative[i] - graphDerivative[i + shift]);
                         }
                     }
                     else
                     {
-                        for(int i = shift; i < graphDerivative.size() - shift; i++)
+                        for(int i = 0; i < graphDerivative.size(); i++)
                         {
-                            graphDiscrepancy[shift + graphDerivative.size()] = (m_previousGraphDerivative[i] - graphDerivative[i + shift])*(m_previousGraphDerivative[i] - graphDerivative[i + shift]);
+                            if((i+shift)>0 && (i+shift)<graphDerivative.size())
+                                graphDiscrepancy[shift + graphDerivative.size()] += (m_previousGraphDerivative[i] - graphDerivative[i + shift])*(m_previousGraphDerivative[i] - graphDerivative[i + shift]);
                         }
                     }
 
                 }
+            }
+
+
+            int startOfCut = graphDiscrepancy.size()/4;
+            int endOfCut = (graphDiscrepancy.size()*3)/4;
+            if(!graphDiscrepancy.isEmpty())
+            {
+                for(int i = startOfCut ; i < endOfCut; i++)
+                {
+                    cutDiscrepancy[i - startOfCut] = graphDiscrepancy[i];
+                }
+
+                int minValueOfCut = 1000;
+                for(int counter = 0; counter < cutDiscrepancy.size(); counter++)
+                {
+                    if(cutDiscrepancy[counter] < minValueOfCut)
+                    {
+                        minValueOfCut = cutDiscrepancy[counter];
+                        indOfMinCut = counter;
+                    }
+                }
+
+                int mainX = startOfCut + indOfMinCut;
+                shiftOfDis = mainX - graphDerivative.size();
             }
 
             //qDebug() << graphDiscrepancy;
@@ -163,6 +199,13 @@ void FrameProcessor::processFrame(QVideoFrame frame)
 
 //    qDebug()<<t3;
 
+
+    emit frameProcessed(graphDerivative, graphDiscrepancy, m_previousGraphDerivative, shiftOfDis);
     m_previousGraphDerivative = graphDerivative;
-    emit frameProcessed(graphDerivative,graphDiscrepancy);
+}
+
+FrameProcessor::FrameProcessor(QObject *parent)
+    : QObject(parent)
+{
+    m_previousGraphDerivative.resize(852);
 }

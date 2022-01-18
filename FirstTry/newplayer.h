@@ -25,7 +25,7 @@ private slots:
     void on_pushButton_2_clicked();
 public slots:
     void updatelineedit(int);
-    void processChart(QVector<double>, QVector<double>);
+    void processChart(QVector<double>, QVector<double>, QVector<double>, int);
 
 private:
     Ui::NewPlayer *ui;
@@ -35,6 +35,7 @@ private:
     FPSWidget *m_fpsWidget = nullptr;
     QChart *m_graphChartDerivative = nullptr;
     QChart *m_graphChartDiscrepancy = nullptr;
+    QChart *m_graphChartPreviousDerivative = nullptr;
     QLineSeries *m_series = nullptr;
 
 };

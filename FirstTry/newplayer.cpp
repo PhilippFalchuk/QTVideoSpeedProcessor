@@ -31,16 +31,22 @@ NewPlayer::NewPlayer(QWidget *parent)
     m_graphChartDiscrepancy = new QChart();
     m_graphChartDiscrepancy->legend()->hide();
     m_graphChartDiscrepancy->createDefaultAxes();
-
     m_graphChartDiscrepancy->setTitle("discrepancy");
+
+    m_graphChartPreviousDerivative =new QChart();
+    m_graphChartPreviousDerivative->legend()->hide();
+    m_graphChartPreviousDerivative->createDefaultAxes();
+    m_graphChartPreviousDerivative->setTitle("derivative2");
 
     QChartView *graphChartViewDerivative = new QChartView(m_graphChartDerivative);
     QChartView *graphChartViewDiscrepancy = new QChartView(m_graphChartDiscrepancy);
+    QChartView *graphChartViewPreviousDerivative = new QChartView(m_graphChartPreviousDerivative);
     //graphChartViewDerivative->setRenderHint(QPainter::Antialiasing);
 
     //ui->horizontalLayout->addWidget(graphChartViewDerivative);
     ui->gridLayout->addWidget(graphChartViewDiscrepancy,1,1);
     ui->gridLayout->addWidget(graphChartViewDerivative,2,1);
+    ui->gridLayout->addWidget(graphChartViewPreviousDerivative,3,1);
 
 
     m_videoProbe = new QVideoProbe(this);
@@ -48,7 +54,8 @@ NewPlayer::NewPlayer(QWidget *parent)
     connect(m_fpsWidget, SIGNAL(updatelineedit(int)), this, SLOT(updatelineedit(int)));
     m_videoProbe->setSource(m_player);
 
-    connect(m_fpsWidget, SIGNAL(frameReady(QVector<double>, QVector<double>)), this, SLOT(processChart(QVector<double>, QVector<double>)));
+    connect(m_fpsWidget, SIGNAL(frameReady(QVector<double>, QVector<double>, QVector<double>, int)), this, SLOT(processChart(QVector<double>, QVector<double>, QVector<double>, int)));
+
 
 
 
@@ -79,14 +86,18 @@ void NewPlayer::updatelineedit(int a)
     ui->lineEdit->setText(str);
 }
 
-void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> graphDiscrepancy)
+void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> graphDiscrepancy,QVector<double> graphPreviousDerivative, int shift)
 {
+    ui->label->setText(QString::number(shift));
+
     QLineSeries *series1 = new QLineSeries();
     QLineSeries *series2 = new QLineSeries();
+    QLineSeries *series3 = new QLineSeries();
 
     for(int counter = 0; counter < graphDerivative.size(); counter++)
     {
         series1->append(counter,graphDerivative[counter]);
+        series3->append(counter,graphPreviousDerivative[counter]);
     }
     for(int counter = 0; counter < graphDiscrepancy.size(); counter++)
     {
@@ -95,8 +106,16 @@ void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> gr
 
     m_graphChartDerivative->removeAllSeries();
     m_graphChartDiscrepancy->removeAllSeries();
+    m_graphChartPreviousDerivative->removeAllSeries();
+
+
     m_graphChartDerivative->addSeries(series1);
     m_graphChartDiscrepancy->addSeries(series2);
+    m_graphChartPreviousDerivative->addSeries(series3);
+
+    m_graphChartDerivative->createDefaultAxes();
+    m_graphChartDiscrepancy->createDefaultAxes();
+    m_graphChartPreviousDerivative->createDefaultAxes();
 
 }
 
