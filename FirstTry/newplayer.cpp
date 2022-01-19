@@ -1,6 +1,7 @@
 #include "newplayer.h"
 #include "ui_newplayer.h"
 #include "videowidget.h"
+#include <QtMath>
 
 NewPlayer::NewPlayer(QWidget *parent)
     : QWidget(parent)
@@ -12,6 +13,8 @@ NewPlayer::NewPlayer(QWidget *parent)
 
     m_player = new QMediaPlayer;
     m_player->setVideoOutput(m_videoWidget);
+
+    ui->horizontalLayout->addWidget(m_videoWidget);
 
     m_fpsWidget = new FPSWidget();
 //    ui->verticalLayout->addWidget(m_fpsWidget);
@@ -57,7 +60,7 @@ NewPlayer::NewPlayer(QWidget *parent)
     connect(m_fpsWidget, SIGNAL(frameReady(QVector<double>, QVector<double>, QVector<double>, int)), this, SLOT(processChart(QVector<double>, QVector<double>, QVector<double>, int)));
 
 
-
+    ui->textBrowser->document()->setMaximumBlockCount(75);
 
 
 
@@ -90,6 +93,8 @@ void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> gr
 {
     ui->label->setText(QString::number(shift));
 
+    shiftBuffer(shift);
+
     QLineSeries *series1 = new QLineSeries();
     QLineSeries *series2 = new QLineSeries();
     QLineSeries *series3 = new QLineSeries();
@@ -101,6 +106,7 @@ void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> gr
     }
     for(int counter = 0; counter < graphDiscrepancy.size(); counter++)
     {
+        graphDiscrepancy[counter] = qLn(graphDiscrepancy[counter]);
         series2->append(counter,graphDiscrepancy[counter]);
     }
 
@@ -116,6 +122,12 @@ void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> gr
     m_graphChartDerivative->createDefaultAxes();
     m_graphChartDiscrepancy->createDefaultAxes();
     m_graphChartPreviousDerivative->createDefaultAxes();
+
+}
+
+void NewPlayer::shiftBuffer(int shift)
+{
+        ui->textBrowser->append(QString::number(shift));
 
 }
 

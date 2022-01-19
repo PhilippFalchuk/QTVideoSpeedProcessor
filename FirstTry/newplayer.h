@@ -38,5 +38,7 @@ private:
     QChart *m_graphChartPreviousDerivative = nullptr;
     QLineSeries *m_series = nullptr;
 
+    void shiftBuffer(int);
+
 };
 #endif // NEWPLAYER_H

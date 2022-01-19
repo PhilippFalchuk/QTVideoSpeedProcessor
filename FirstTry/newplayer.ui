@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1109</width>
+    <width>1487</width>
     <height>1045</height>
    </rect>
   </property>
@@ -16,13 +16,20 @@
   <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>500</x>
-     <y>140</y>
+     <x>450</x>
+     <y>10</y>
      <width>160</width>
-     <height>80</height>
+     <height>108</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QLineEdit" name="lineEdit">
+      <property name="text">
+       <string>fps</string>
+      </property>
+     </widget>
+    </item>
     <item>
      <widget class="QPushButton" name="pushButton">
       <property name="text">
@@ -37,17 +44,14 @@
       </property>
      </widget>
     </item>
+    <item>
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>shift</string>
+      </property>
+     </widget>
+    </item>
    </layout>
-  </widget>
-  <widget class="QLineEdit" name="lineEdit">
-   <property name="geometry">
-    <rect>
-     <x>530</x>
-     <y>40</y>
-     <width>113</width>
-     <height>24</height>
-    </rect>
-   </property>
   </widget>
   <widget class="QWidget" name="gridLayoutWidget">
    <property name="geometry">
@@ -60,18 +64,37 @@
    </property>
    <layout class="QGridLayout" name="gridLayout"/>
   </widget>
-  <widget class="QLabel" name="label">
+  <widget class="QTextBrowser" name="textBrowser">
    <property name="geometry">
     <rect>
-     <x>720</x>
-     <y>40</y>
-     <width>81</width>
-     <height>31</height>
+     <x>810</x>
+     <y>0</y>
+     <width>256</width>
+     <height>1011</height>
     </rect>
    </property>
-   <property name="text">
-    <string>TextLabel</string>
+  </widget>
+  <widget class="QWidget" name="horizontalLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>39</x>
+     <y>9</y>
+     <width>401</width>
+     <height>221</height>
+    </rect>
    </property>
+   <layout class="QHBoxLayout" name="horizontalLayout"/>
+  </widget>
+  <widget class="QWidget" name="horizontalLayoutWidget_2">
+   <property name="geometry">
+    <rect>
+     <x>1100</x>
+     <y>50</y>
+     <width>331</width>
+     <height>191</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_2"/>
   </widget>
  </widget>
  <resources/>

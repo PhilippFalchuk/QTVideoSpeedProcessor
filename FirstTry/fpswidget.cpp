@@ -33,7 +33,7 @@ void FPSWidget::processFrame(const QVideoFrame &frame)
     m_fpsCounter++;
 
     QMetaObject::invokeMethod(&m_processor, "processFrame",
-                              Qt::QueuedConnection, Q_ARG(QVideoFrame, frame));
+                              Qt::QueuedConnection, Q_ARG(QVideoFrame, frame), Q_ARG(int, m_zoneWidth), Q_ARG(int, m_zoneHeight));
 }
 
 void FPSWidget::refreshCounter()
@@ -46,6 +46,12 @@ void FPSWidget::refreshCounter()
 
 
     m_fpsCounter = 0;
+}
+
+void FPSWidget::setZone(int width, int height)
+{
+    m_zoneWidth = width;
+    m_zoneHeight = height;
 }
 
 
@@ -75,19 +81,35 @@ QTime fromMSec( quint64 totalMsec )
     return QTime( hour, minute, sec, msec );
 }
 
-void FrameProcessor::processFrame(QVideoFrame frame)
+void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeight)
 {
 //    QTime t1, t3;
 //    quint64 msec;
 //    t1 = QTime::currentTime();
 
+    counterframe++;
 
     int widthOfImage = 1280;
-    int widthOfZone = (widthOfImage*2)/3;
     int heightOfImage = 720;
-    int heightOfZone = (heightOfImage*2)/3;
-    int startOfZoneWidth = (widthOfImage - widthOfZone)/2;
-    int startOfZoneHeight = (heightOfImage - heightOfZone)/2;
+
+    int widthOfZone;
+    int heightOfZone;
+    int startOfZoneWidth;
+    int startOfZoneHeight;
+    if(zoneWidth ==0 || zoneHeight == 0)
+    {
+        widthOfZone = (widthOfImage*2)/3;
+        heightOfZone = (heightOfImage*2)/3;
+        startOfZoneWidth = (widthOfImage - widthOfZone)/2;
+        startOfZoneHeight = (heightOfImage - heightOfZone)/2;
+    }
+    else
+    {
+        widthOfZone = zoneWidth;
+        heightOfZone = zoneHeight;
+        startOfZoneWidth = (widthOfImage - widthOfZone)/2;
+        startOfZoneHeight = (heightOfImage - heightOfZone)/2;
+    }
     QVector<double> graphBWA(widthOfZone);
     QVector<double> graphDerivative(graphBWA.size() - 1);
     QVector<double> graphDiscrepancy(graphDerivative.size()*2);
@@ -111,7 +133,7 @@ void FrameProcessor::processFrame(QVideoFrame frame)
             {
              for(int x = startOfZoneWidth; x < image.width() - startOfZoneWidth - 1; x++)
              {
-                 graphBWA[x - startOfZoneWidth] += qGray(image.pixel(x,y))/420.;
+                 graphBWA[x - startOfZoneWidth] += qGray(image.pixel(x,y))/(static_cast<double>(heightOfZone));
              }
 
             }
@@ -129,7 +151,34 @@ void FrameProcessor::processFrame(QVideoFrame frame)
 //                if(delta < 0)
 //                    graphDerivative[counter] = -(delta);
 //                else
-                    graphDerivative[counter] = delta;
+                graphDerivative[counter] = delta;
+//                graphDerivative[counter] = 0;
+//                if (counterframe%2 == 0 && counter == 100) graphDerivative[counter] = 120;
+//                if (counterframe%2 == 0 && counter == 220) graphDerivative[counter] = 44;
+//                if (counterframe%2 == 0 && counter == 240) graphDerivative[counter] = 44;
+//                if (counterframe%2 == 0 && counter == 280) graphDerivative[counter] = 44;
+//                if (counterframe%2 == 0 && counter == 300) graphDerivative[counter] = 44;
+//                if (counterframe%2 == 0 && counter == 400) graphDerivative[counter] = 44;
+
+//                if (counterframe%2 == 0 && counter == 520) graphDerivative[counter] = 46;
+//                if (counterframe%2 == 0 && counter == 540) graphDerivative[counter] = 46;
+//                if (counterframe%2 == 0 && counter == 580) graphDerivative[counter] = 46;
+//                if (counterframe%2 == 0 && counter == 600) graphDerivative[counter] = 46;
+//                if (counterframe%2 == 0 && counter == 700) graphDerivative[counter] = 46;
+
+//                if (counterframe%2 != 0 && counter == 101) graphDerivative[counter] = 120;
+//                if (counterframe%2 != 0 && counter == 230) graphDerivative[counter] = 44;
+//                if (counterframe%2 != 0 && counter == 250) graphDerivative[counter] = 44;
+//                if (counterframe%2 != 0 && counter == 290) graphDerivative[counter] = 44;
+//                if (counterframe%2 != 0 && counter == 310) graphDerivative[counter] = 44;
+//                if (counterframe%2 != 0 && counter == 410) graphDerivative[counter] = 44;
+
+//                if (counterframe%2 != 0 && counter == 525) graphDerivative[counter] = 46;
+//                if (counterframe%2 != 0 && counter == 545) graphDerivative[counter] = 46;
+//                if (counterframe%2 != 0 && counter == 585) graphDerivative[counter] = 46;
+//                if (counterframe%2 != 0 && counter == 605) graphDerivative[counter] = 46;
+//                if (counterframe%2 != 0 && counter == 705) graphDerivative[counter] = 46;
+
             }
 
 //            for(int counter = 0; counter < graphBWA.size() - 1;counter++)
@@ -144,12 +193,17 @@ void FrameProcessor::processFrame(QVideoFrame frame)
             {
                 for(int shift = -(graphDerivative.size()); shift < graphDerivative.size(); shift++)
                 {
+                    double int1=0,int2=0;
                     if(shift<0)
                     {
                         for(int i = 0 ; i < graphDerivative.size(); i++)
                         {
                             if((i+shift)>0 && (i+shift)<graphDerivative.size())
+                            {
                                 graphDiscrepancy[shift+graphDerivative.size()] += (m_previousGraphDerivative[i] - graphDerivative[i + shift])  *  (m_previousGraphDerivative[i] - graphDerivative[i + shift]);
+                                int1 += m_previousGraphDerivative[i]*m_previousGraphDerivative[i];
+                                int2 += graphDerivative[i + shift]*graphDerivative[i + shift];
+                            }
                         }
                     }
                     else
@@ -157,9 +211,19 @@ void FrameProcessor::processFrame(QVideoFrame frame)
                         for(int i = 0; i < graphDerivative.size(); i++)
                         {
                             if((i+shift)>0 && (i+shift)<graphDerivative.size())
+                            {
                                 graphDiscrepancy[shift + graphDerivative.size()] += (m_previousGraphDerivative[i] - graphDerivative[i + shift])*(m_previousGraphDerivative[i] - graphDerivative[i + shift]);
+                                int1 += m_previousGraphDerivative[i]*m_previousGraphDerivative[i];
+                                int2 += graphDerivative[i + shift]*graphDerivative[i + shift];
+                            }
                         }
                     }
+                    //нормируем на интегралы
+                    if(int1*int2>0)
+                        graphDiscrepancy[shift+graphDerivative.size()] /= (int1*int2);
+                    else
+                        graphDiscrepancy[shift+graphDerivative.size()] = 0.0001;
+
 
                 }
             }
@@ -174,7 +238,7 @@ void FrameProcessor::processFrame(QVideoFrame frame)
                     cutDiscrepancy[i - startOfCut] = graphDiscrepancy[i];
                 }
 
-                int minValueOfCut = 1000;
+                qreal minValueOfCut = __DBL_MAX__;
                 for(int counter = 0; counter < cutDiscrepancy.size(); counter++)
                 {
                     if(cutDiscrepancy[counter] < minValueOfCut)
