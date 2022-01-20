@@ -23,6 +23,10 @@ NewPlayer::NewPlayer(QWidget *parent)
     m_series->append(0, 6.7);
     m_series->append(40, 48);
 
+    m_bufferSeries = new QLineSeries();
+    m_bufferSeries->append(0, 0);
+
+
 
 
     m_graphChartDerivative = new QChart();
@@ -41,15 +45,24 @@ NewPlayer::NewPlayer(QWidget *parent)
     m_graphChartPreviousDerivative->createDefaultAxes();
     m_graphChartPreviousDerivative->setTitle("derivative2");
 
+    m_bufferChart =new QChart();
+    m_bufferChart->legend()->hide();
+    m_bufferChart->createDefaultAxes();
+    m_bufferChart->addSeries(m_bufferSeries);
+    m_bufferChart->setTitle("buffer");
+
     QChartView *graphChartViewDerivative = new QChartView(m_graphChartDerivative);
     QChartView *graphChartViewDiscrepancy = new QChartView(m_graphChartDiscrepancy);
     QChartView *graphChartViewPreviousDerivative = new QChartView(m_graphChartPreviousDerivative);
+
+    m_bufferChartView = new QChartView( m_bufferChart);
     //graphChartViewDerivative->setRenderHint(QPainter::Antialiasing);
 
     //ui->horizontalLayout->addWidget(graphChartViewDerivative);
     ui->gridLayout->addWidget(graphChartViewDiscrepancy,1,1);
     ui->gridLayout->addWidget(graphChartViewDerivative,2,1);
     ui->gridLayout->addWidget(graphChartViewPreviousDerivative,3,1);
+    ui->horizontalLayout_2->addWidget(m_bufferChartView);
 
 
     m_videoProbe = new QVideoProbe(this);
@@ -58,6 +71,8 @@ NewPlayer::NewPlayer(QWidget *parent)
     m_videoProbe->setSource(m_player);
 
     connect(m_fpsWidget, SIGNAL(frameReady(QVector<double>, QVector<double>, QVector<double>, int)), this, SLOT(processChart(QVector<double>, QVector<double>, QVector<double>, int)));
+
+    connect(this, SIGNAL(zoneChanged(int,int)), m_fpsWidget,SLOT(setZone(int,int)));
 
 
     ui->textBrowser->document()->setMaximumBlockCount(75);
@@ -127,8 +142,39 @@ void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> gr
 
 void NewPlayer::shiftBuffer(int shift)
 {
-        ui->textBrowser->append(QString::number(shift));
+//    if(m_bufferCounter%2)
+//        shift = 50;
+//    else
+//        shift = -50;
 
+
+    ui->textBrowser->append(QString::number(shift));
+    m_bufferSeries->append(m_bufferCounter, shift);
+
+
+
+    m_bufferCounter++;
+
+    m_bufferChartView->repaint();
+
+
+
+//    m_bufferChart->removeAllSeries();
+//    m_bufferChart->addSeries(m_bufferSeries);
+//    m_bufferChart->createDefaultAxes();
 }
 
+
+
+void NewPlayer::on_editZone_clicked()
+{
+    int width = ui->spinBox->value();
+    int height = ui->spinBox_2->value();
+
+
+
+
+    emit zoneChanged(width,height);
+
+}
 

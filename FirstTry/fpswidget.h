@@ -49,8 +49,8 @@ private:
     FrameProcessor m_processor;
     QColor m_backgroundColor;
     int m_margin;
-    int m_zoneWidth = 100;
-    int m_zoneHeight = 100;
+    int m_zoneWidth = 300;
+    int m_zoneHeight = 300;
 
 
     // QWidget interface
