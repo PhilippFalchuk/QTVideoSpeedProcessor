@@ -16,8 +16,8 @@
   <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>450</x>
-     <y>10</y>
+     <x>740</x>
+     <y>0</y>
      <width>160</width>
      <height>108</height>
     </rect>
@@ -57,9 +57,9 @@
    <property name="geometry">
     <rect>
      <x>50</x>
-     <y>240</y>
+     <y>390</y>
      <width>721</width>
-     <height>771</height>
+     <height>621</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout"/>
@@ -67,9 +67,9 @@
   <widget class="QTextBrowser" name="textBrowser">
    <property name="geometry">
     <rect>
-     <x>810</x>
-     <y>0</y>
-     <width>256</width>
+     <x>1070</x>
+     <y>-10</y>
+     <width>81</width>
      <height>1011</height>
     </rect>
    </property>
@@ -77,10 +77,10 @@
   <widget class="QWidget" name="horizontalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>39</x>
-     <y>9</y>
-     <width>401</width>
-     <height>221</height>
+     <x>30</x>
+     <y>0</y>
+     <width>691</width>
+     <height>371</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout"/>
@@ -88,10 +88,10 @@
   <widget class="QWidget" name="horizontalLayoutWidget_2">
    <property name="geometry">
     <rect>
-     <x>1100</x>
+     <x>1170</x>
      <y>50</y>
      <width>331</width>
-     <height>191</height>
+     <height>511</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_2"/>
@@ -99,8 +99,8 @@
   <widget class="QWidget" name="verticalLayoutWidget_2">
    <property name="geometry">
     <rect>
-     <x>620</x>
-     <y>10</y>
+     <x>900</x>
+     <y>0</y>
      <width>160</width>
      <height>148</height>
     </rect>

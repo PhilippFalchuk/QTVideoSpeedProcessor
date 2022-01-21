@@ -24,7 +24,8 @@ NewPlayer::NewPlayer(QWidget *parent)
     m_series->append(40, 48);
 
     m_bufferSeries = new QLineSeries();
-    m_bufferSeries->append(0, 0);
+//    m_bufferSeries->append(0, 0);
+//    m_bufferSeries->append(2, 2);
 
 
 
@@ -47,7 +48,7 @@ NewPlayer::NewPlayer(QWidget *parent)
 
     m_bufferChart =new QChart();
     m_bufferChart->legend()->hide();
-    m_bufferChart->createDefaultAxes();
+//    m_bufferChart->createDefaultAxes();
     m_bufferChart->addSeries(m_bufferSeries);
     m_bufferChart->setTitle("buffer");
 
@@ -55,7 +56,7 @@ NewPlayer::NewPlayer(QWidget *parent)
     QChartView *graphChartViewDiscrepancy = new QChartView(m_graphChartDiscrepancy);
     QChartView *graphChartViewPreviousDerivative = new QChartView(m_graphChartPreviousDerivative);
 
-    m_bufferChartView = new QChartView( m_bufferChart);
+    m_bufferChartView = new QChartView(m_bufferChart);
     //graphChartViewDerivative->setRenderHint(QPainter::Antialiasing);
 
     //ui->horizontalLayout->addWidget(graphChartViewDerivative);
@@ -146,16 +147,65 @@ void NewPlayer::shiftBuffer(int shift)
 //        shift = 50;
 //    else
 //        shift = -50;
-
-
     ui->textBrowser->append(QString::number(shift));
+
+
+    if(!(m_bufferCounter%200))
+    {
+        QValueAxis *axisY = new QValueAxis();
+
+        if(m_bufferCounter == 0)
+        {
+            axisY->setRange(-500,500);
+            m_bufferChart->addAxis(axisY, Qt::AlignLeft);
+            m_bufferSeries->attachAxis(axisY);
+
+        }
+
+
+        QValueAxis *axisX = new QValueAxis();
+        if(m_bufferCounter == 0)
+        {
+            axisX->setRange(0,200);
+            m_bufferChart->addAxis(axisX, Qt::AlignBottom);
+            m_bufferSeries->attachAxis(axisX);
+        }
+        else
+        {
+            axisX->setVisible(false);
+            m_bufferChart->removeAxis(axisX);
+            axisX->setRange(m_bufferCounter, m_bufferCounter+200);
+            axisX->setMax(m_bufferCounter+200);
+            m_bufferChart->addAxis(axisX, Qt::AlignBottom);
+            m_bufferSeries->attachAxis(axisX);
+        }
+
+//        m_bufferSeries->attachAxis(axisX);
+//        m_bufferSeries->attachAxis(axisY);
+    }
+
+
+//    int i = m_bufferCounter%200;
+
+
+
     m_bufferSeries->append(m_bufferCounter, shift);
+//    int g;
+//    if(m_bufferCounter%2)
+//        g = 1;
+//    else
+//        g = 2;
+
+//    m_bufferSeries->append(m_bufferCounter, g);
+
+//    m_bufferChart->removeAllSeries();
+
 
 
 
     m_bufferCounter++;
 
-    m_bufferChartView->repaint();
+
 
 
 

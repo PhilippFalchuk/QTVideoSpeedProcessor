@@ -114,6 +114,7 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
     QVector<double> graphDerivative(graphBWA.size() - 1);
     QVector<double> graphDiscrepancy(graphDerivative.size()*2);
     QVector<double> cutDiscrepancy(graphDerivative.size());
+    m_previousGraphDerivative.resize(graphDerivative.size());
     int indOfMinCut;
     int shiftOfDis;
     do
@@ -131,7 +132,7 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
 
             for (int y = startOfZoneHeight; y < image.height() - startOfZoneHeight; ++y)
             {
-             for(int x = startOfZoneWidth; x < image.width() - startOfZoneWidth; x++)
+             for(int x = startOfZoneWidth; x < image.width() - startOfZoneWidth -1; x++)
              {
                  graphBWA[x - startOfZoneWidth] += qGray(image.pixel(x,y))/(static_cast<double>(heightOfZone));
              }
@@ -271,5 +272,5 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
 FrameProcessor::FrameProcessor(QObject *parent)
     : QObject(parent)
 {
-//    m_previousGraphDerivative.resize(852);
+//   m_previousGraphDerivative.resize(852);
 }
