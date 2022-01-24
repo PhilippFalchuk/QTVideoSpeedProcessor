@@ -13,8 +13,12 @@ FPSWidget::FPSWidget(QLabel *parent)
     m_processor.moveToThread(&m_processorThread);
     qRegisterMetaType<QVector<double>>("QVector<double>");
     //connect(&m_processor, &FrameProcessor::frameProcessed, this, &FPSWidget::frameReady);
-    connect(&m_processor, SIGNAL(frameProcessed(QVector<double>, QVector<double>,QVector<double>, int)), this, SIGNAL(frameReady(QVector<double>, QVector<double>, QVector<double>, int)));
+    connect(&m_processor, SIGNAL(frameProcessed(QVector<double>, QVector<double>,QVector<double>, int, int)), this, SIGNAL(frameReady(QVector<double>, QVector<double>, QVector<double>, int, int)));
     m_processorThread.start(QThread::LowestPriority);
+
+    m_processorColor.moveToThread(&m_processorThreadColor);
+    connect(&m_processorColor, SIGNAL(frameProcessedColor(QVector<double>, QVector<double>,QVector<double>, int)), this, SIGNAL(frameReadyColor(QVector<double>, QVector<double>, QVector<double>, int)));
+    m_processorThreadColor.start(QThread::LowestPriority);
 
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &FPSWidget::refreshCounter);
@@ -33,6 +37,9 @@ void FPSWidget::processFrame(const QVideoFrame &frame)
     m_fpsCounter++;
 
     QMetaObject::invokeMethod(&m_processor, "processFrame",
+                              Qt::QueuedConnection, Q_ARG(QVideoFrame, frame), Q_ARG(int, m_zoneWidth), Q_ARG(int, m_zoneHeight));
+
+    QMetaObject::invokeMethod(&m_processorColor, "processFrameColor",
                               Qt::QueuedConnection, Q_ARG(QVideoFrame, frame), Q_ARG(int, m_zoneWidth), Q_ARG(int, m_zoneHeight));
 }
 
@@ -87,7 +94,7 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
 //    quint64 msec;
 //    t1 = QTime::currentTime();
 
-    counterframe++;
+    counterFrame++;
 
     int widthOfImage = 1280;
     int heightOfImage = 720;
@@ -109,6 +116,9 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
         heightOfZone = zoneHeight;
         startOfZoneWidth = (widthOfImage - widthOfZone)/2;
         startOfZoneHeight = (heightOfImage - heightOfZone)/2;
+
+        if(!(widthOfZone%2))
+            widthOfZone -= 1;
     }
     QVector<double> graphBWA(widthOfZone);
     QVector<double> graphDerivative(graphBWA.size() - 1);
@@ -265,11 +275,163 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
 //    qDebug()<<t3;
 
 
-    emit frameProcessed(graphDerivative, graphDiscrepancy, m_previousGraphDerivative, shiftOfDis);
+    emit frameProcessed(graphDerivative, graphDiscrepancy, m_previousGraphDerivative, shiftOfDis, counterFrame);
     m_previousGraphDerivative = graphDerivative;
 }
 
 FrameProcessor::FrameProcessor(QObject *parent)
+    : QObject(parent)
+{
+//   m_previousGraphDerivative.resize(852);
+}
+
+void FrameProcessorColor::processFrameColor(QVideoFrame frame, int zoneWidth, int zoneHeight)
+{
+
+
+    counterframe++;
+
+    int widthOfImage = 1280;
+    int heightOfImage = 720;
+
+    int widthOfZone;
+    int heightOfZone;
+    int startOfZoneWidth;
+    int startOfZoneHeight;
+    if(zoneWidth ==0 || zoneHeight == 0)
+    {
+        widthOfZone = (widthOfImage*2)/3;
+        heightOfZone = (heightOfImage*2)/3;
+        startOfZoneWidth = (widthOfImage - widthOfZone)/2;
+        startOfZoneHeight = (heightOfImage - heightOfZone)/2;
+    }
+    else
+    {
+        widthOfZone = zoneWidth;
+        heightOfZone = zoneHeight;
+        startOfZoneWidth = (widthOfImage - widthOfZone)/2;
+        startOfZoneHeight = (heightOfImage - heightOfZone)/2;
+    }
+    QVector<double> graphBWA(widthOfZone);
+    QVector<double> graphDerivative(graphBWA.size() - 1);
+    QVector<double> graphDiscrepancy(graphDerivative.size()*2);
+    QVector<double> cutDiscrepancy(graphDerivative.size());
+    m_previousGraphDerivative.resize(graphDerivative.size());
+    int indOfMinCut;
+    int shiftOfDis;
+    do
+    {
+        if(!frame.map(QAbstractVideoBuffer::ReadOnly))
+            break;
+
+        QImage::Format imageFormat =QVideoFrame::imageFormatFromPixelFormat(frame.pixelFormat());
+        //qDebug()<<imageFormat;
+        if(imageFormat != QImage::Format_Invalid)
+        {
+            QImage image/* = frame.image();*/(frame.bits(), frame.width(), frame.height(), imageFormat);
+            image = image.convertToFormat(QImage::Format_RGB32);
+
+
+            for (int y = startOfZoneHeight; y < image.height() - startOfZoneHeight; ++y)
+            {
+             for(int x = startOfZoneWidth; x < image.width() - startOfZoneWidth -1; x++)
+             {
+                 graphBWA[x - startOfZoneWidth] += qGray(image.pixel(x,y))/(static_cast<double>(heightOfZone));
+             }
+
+            }
+
+
+
+            int sizeBWA = graphBWA.size();
+            for(int counter = 0; counter < sizeBWA - 1; counter++)
+            {
+                double delta =graphBWA[counter];
+
+                graphDerivative[counter] = delta;
+
+            }
+
+
+
+
+            if(!m_previousGraphDerivative.isEmpty())
+            {
+                for(int shift = -(graphDerivative.size()); shift < graphDerivative.size(); shift++)
+                {
+                    double int1=0,int2=0;
+                    if(shift<0)
+                    {
+                        for(int i = 0 ; i < graphDerivative.size(); i++)
+                        {
+                            if((i+shift)>0 && (i+shift)<graphDerivative.size())
+                            {
+                                graphDiscrepancy[shift+graphDerivative.size()] += (m_previousGraphDerivative[i] - graphDerivative[i + shift])  *  (m_previousGraphDerivative[i] - graphDerivative[i + shift]);
+                                int1 += m_previousGraphDerivative[i]*m_previousGraphDerivative[i];
+                                int2 += graphDerivative[i + shift]*graphDerivative[i + shift];
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for(int i = 0; i < graphDerivative.size(); i++)
+                        {
+                            if((i+shift)>0 && (i+shift)<graphDerivative.size())
+                            {
+                                graphDiscrepancy[shift + graphDerivative.size()] += (m_previousGraphDerivative[i] - graphDerivative[i + shift])*(m_previousGraphDerivative[i] - graphDerivative[i + shift]);
+                                int1 += m_previousGraphDerivative[i]*m_previousGraphDerivative[i];
+                                int2 += graphDerivative[i + shift]*graphDerivative[i + shift];
+                            }
+                        }
+                    }
+                    //нормируем на интегралы
+                    if(int1*int2>0)
+                        graphDiscrepancy[shift+graphDerivative.size()] /= (int1*int2);
+                    else
+                        graphDiscrepancy[shift+graphDerivative.size()] = NAN;//из-за этого в консоли выскакивают nan, но это убирает завалы невязки))
+
+
+                }
+            }
+
+
+            int startOfCut = graphDiscrepancy.size()/4;
+            int endOfCut = (graphDiscrepancy.size()*3)/4;
+            if(!graphDiscrepancy.isEmpty())
+            {
+                for(int i = startOfCut ; i < endOfCut; i++)
+                {
+                    cutDiscrepancy[i - startOfCut] = graphDiscrepancy[i];
+                }
+
+                qreal minValueOfCut = __DBL_MAX__;
+                for(int counter = 0; counter < cutDiscrepancy.size(); counter++)
+                {
+                    if(cutDiscrepancy[counter] < minValueOfCut)
+                    {
+                        minValueOfCut = cutDiscrepancy[counter];
+                        indOfMinCut = counter;
+                    }
+                }
+
+                int mainX = startOfCut + indOfMinCut;
+                shiftOfDis = mainX - graphDerivative.size();
+            }
+
+
+
+
+        }
+    }while(false);
+
+
+
+
+    emit frameProcessedColor(graphDerivative, graphDiscrepancy, m_previousGraphDerivative, shiftOfDis);
+    m_previousGraphDerivative = graphDerivative;
+}
+
+FrameProcessorColor::FrameProcessorColor(QObject *parent)
     : QObject(parent)
 {
 //   m_previousGraphDerivative.resize(852);

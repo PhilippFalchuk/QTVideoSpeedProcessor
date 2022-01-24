@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1487</width>
-    <height>1045</height>
+    <width>1774</width>
+    <height>973</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -58,7 +58,7 @@
     <rect>
      <x>50</x>
      <y>390</y>
-     <width>721</width>
+     <width>491</width>
      <height>621</height>
     </rect>
    </property>
@@ -90,8 +90,8 @@
     <rect>
      <x>1170</x>
      <y>50</y>
-     <width>331</width>
-     <height>511</height>
+     <width>591</width>
+     <height>491</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout_2"/>
@@ -117,6 +117,9 @@
       <property name="maximum">
        <number>1280</number>
       </property>
+      <property name="value">
+       <number>1280</number>
+      </property>
      </widget>
     </item>
     <item>
@@ -130,6 +133,9 @@
       <property name="maximum">
        <number>720</number>
       </property>
+      <property name="value">
+       <number>720</number>
+      </property>
      </widget>
     </item>
     <item>
@@ -140,6 +146,17 @@
      </widget>
     </item>
    </layout>
+  </widget>
+  <widget class="QWidget" name="gridLayoutWidget_2">
+   <property name="geometry">
+    <rect>
+     <x>550</x>
+     <y>390</y>
+     <width>511</width>
+     <height>621</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_2"/>
   </widget>
  </widget>
  <resources/>

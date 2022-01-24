@@ -30,7 +30,8 @@ private slots:
 
 public slots:
     void updatelineedit(int);
-    void processChart(QVector<double>, QVector<double>, QVector<double>, int);
+    void processChart(QVector<double>, QVector<double>, QVector<double>, int, int);
+    void processChartColor(QVector<double>, QVector<double>, QVector<double>, int);
 
 private:
     Ui::NewPlayer *ui;
@@ -41,14 +42,22 @@ private:
     QChart *m_graphChartDerivative = nullptr;
     QChart *m_graphChartDiscrepancy = nullptr;
     QChart *m_graphChartPreviousDerivative = nullptr;
+    QChart *m_graphChartColor = nullptr;
+    QChart *m_graphChartDiscrepancyColor = nullptr;
+    QChart *m_graphChartPreviousColor = nullptr;
     QChart *m_bufferChart = nullptr;
     QLineSeries *m_series = nullptr;
     QLineSeries *m_bufferSeries = nullptr;
+    QLineSeries *m_bufferSeriesColor = nullptr;
     int m_bufferCounter = 0;
+    int m_bufferCounterColor = 0;
     QChartView *m_bufferChartView = nullptr;
-    QPushButton *m_btn = nullptr;
+    QValueAxis *m_axisY = nullptr;
+    QValueAxis *m_axisX = nullptr;
 
-    void shiftBuffer(int);
+
+    void shiftBuffer(int, int);
+    void shiftBufferColor(int);
 
 };
 #endif // NEWPLAYER_H
