@@ -46,6 +46,7 @@ private:
     QLineSeries *m_bufferSeries = nullptr;
     int m_bufferCounter = 0;
     QChartView *m_bufferChartView = nullptr;
+    QPushButton *m_btn = nullptr;
 
     void shiftBuffer(int);
 

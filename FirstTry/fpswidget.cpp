@@ -223,7 +223,7 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
                     if(int1*int2>0)
                         graphDiscrepancy[shift+graphDerivative.size()] /= (int1*int2);
                     else
-                        graphDiscrepancy[shift+graphDerivative.size()] = NAN;
+                        graphDiscrepancy[shift+graphDerivative.size()] = NAN;//из-за этого в консоли выскакивают nan, но это убирает завалы невязки))
 
 
                 }

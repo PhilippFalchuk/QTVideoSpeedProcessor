@@ -79,7 +79,6 @@ NewPlayer::NewPlayer(QWidget *parent)
     ui->textBrowser->document()->setMaximumBlockCount(75);
 
 
-
 }
 
 NewPlayer::~NewPlayer()
@@ -122,7 +121,10 @@ void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> gr
     }
     for(int counter = 0; counter < graphDiscrepancy.size(); counter++)
     {
-        graphDiscrepancy[counter] = qLn(graphDiscrepancy[counter]);
+
+        graphDiscrepancy[counter] = qLn(graphDiscrepancy[counter]);//из-за этого тоже выскакивает nan, и это тоже нужно)
+
+
         series2->append(counter,graphDiscrepancy[counter]);
     }
 
@@ -140,6 +142,7 @@ void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> gr
     m_graphChartPreviousDerivative->createDefaultAxes();
 
 }
+
 
 void NewPlayer::shiftBuffer(int shift)
 {
@@ -173,7 +176,7 @@ void NewPlayer::shiftBuffer(int shift)
         else
         {
             axisX->setVisible(false);
-            m_bufferChart->removeAxis(axisX);
+//            m_bufferChart->removeAxis(axisX);
             axisX->setRange(m_bufferCounter, m_bufferCounter+200);
             axisX->setMax(m_bufferCounter+200);
             m_bufferChart->addAxis(axisX, Qt::AlignBottom);
