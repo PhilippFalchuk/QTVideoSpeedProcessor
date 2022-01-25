@@ -50,6 +50,18 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+class MaskProcessor : public QObject
+{
+    Q_OBJECT
+
+public slots:
+    void processMask(QVideoFrame, int, int);
+
+signals:
+    void maskProcessed(QImage);
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class FPSWidget : public QLabel
 {
@@ -67,14 +79,18 @@ public slots:
 signals:
     void frameReady(QVector<double>, QVector<double>, QVector<double>, int, int);
     void frameReadyColor(QVector<double>, QVector<double>, QVector<double>, int);
+    void maskReady(QImage);
     void updatelineedit(int);
 
 private:
     qint32 m_fpsCounter;
     QThread m_processorThread;
     QThread m_processorThreadColor;
+    QThread m_maskThread;
     FrameProcessor m_processor;
     FrameProcessorColor m_processorColor;
+    MaskProcessor m_maskProcessor;
+
     QColor m_backgroundColor;
     int m_margin;
     int m_zoneWidth = 0;

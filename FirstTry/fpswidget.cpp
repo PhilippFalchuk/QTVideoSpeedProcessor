@@ -20,6 +20,11 @@ FPSWidget::FPSWidget(QLabel *parent)
     connect(&m_processorColor, SIGNAL(frameProcessedColor(QVector<double>, QVector<double>,QVector<double>, int)), this, SIGNAL(frameReadyColor(QVector<double>, QVector<double>, QVector<double>, int)));
     m_processorThreadColor.start(QThread::LowestPriority);
 
+    m_maskProcessor.moveToThread(&m_maskThread);
+    qRegisterMetaType<QImage>("QImage");
+    connect(&m_maskProcessor, SIGNAL(maskProcessed(QImage)), this, SIGNAL(maskReady(QImage)));
+    m_maskThread.start(QThread::LowestPriority);
+
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &FPSWidget::refreshCounter);
     timer->start(1000);
@@ -40,6 +45,9 @@ void FPSWidget::processFrame(const QVideoFrame &frame)
                               Qt::QueuedConnection, Q_ARG(QVideoFrame, frame), Q_ARG(int, m_zoneWidth), Q_ARG(int, m_zoneHeight));
 
     QMetaObject::invokeMethod(&m_processorColor, "processFrameColor",
+                              Qt::QueuedConnection, Q_ARG(QVideoFrame, frame), Q_ARG(int, m_zoneWidth), Q_ARG(int, m_zoneHeight));
+
+    QMetaObject::invokeMethod(&m_maskProcessor, "processMask",
                               Qt::QueuedConnection, Q_ARG(QVideoFrame, frame), Q_ARG(int, m_zoneWidth), Q_ARG(int, m_zoneHeight));
 }
 
@@ -435,4 +443,67 @@ FrameProcessorColor::FrameProcessorColor(QObject *parent)
     : QObject(parent)
 {
 //   m_previousGraphDerivative.resize(852);
+}
+
+void MaskProcessor::processMask(QVideoFrame frame, int width, int height)
+{
+    int widthOfImage = 1280;
+    int heightOfImage = 720;
+
+    int widthOfMask;
+    int heightOfMask;
+    int startOfMaskWidth;
+    int startOfMaskHeight;
+    if((width == 0) || (height == 0))
+    {
+        widthOfMask = (widthOfImage*2)/3;
+        heightOfMask = (heightOfImage*2)/3;
+        startOfMaskWidth = (widthOfImage - widthOfMask)/2;
+        startOfMaskHeight = (heightOfImage - heightOfMask)/2;
+    }
+    else
+    {
+        widthOfMask = width;
+        heightOfMask = height;
+        startOfMaskWidth = (widthOfImage - widthOfMask)/2;
+        startOfMaskHeight = (heightOfImage - heightOfMask)/2;
+    }
+    QImage outImage;
+    do
+    {
+        if(!frame.map(QAbstractVideoBuffer::ReadOnly))
+            break;
+
+        QImage::Format imageFormat =QVideoFrame::imageFormatFromPixelFormat(frame.pixelFormat());
+        //qDebug()<<imageFormat;
+        if(imageFormat != QImage::Format_Invalid)
+        {
+            QImage image/* = frame.image();*/(frame.bits(), frame.width(), frame.height(), imageFormat);
+            image = image.convertToFormat(QImage::Format_RGB32);
+
+//            QRgb value = qRgba(255, 0, 255, 0);
+
+//            for(int x = startOfMaskWidth; x < startOfMaskWidth + widthOfMask; x++)
+//            {
+//                for(int y = startOfMaskHeight; y < startOfMaskHeight + heightOfMask; y++)
+//                {
+//                    if((x == startOfMaskWidth) || (x == startOfMaskWidth + widthOfMask - 1))
+//                        image.setPixel(x,y,value);
+
+//                    if((y == startOfMaskHeight) || (y == startOfMaskHeight + heightOfMask - 1))
+//                        image.setPixel(x,y,value);
+//                }
+//            }
+            QPainter painter(&image);
+            painter.setBrush(Qt::NoBrush);
+            painter.setPen(Qt::red);
+            painter.drawRect(startOfMaskWidth,startOfMaskHeight,widthOfMask,heightOfMask);
+            painter.end();
+
+            outImage = image;
+        }
+
+    }while(false);
+
+    emit maskProcessed(outImage);
 }
