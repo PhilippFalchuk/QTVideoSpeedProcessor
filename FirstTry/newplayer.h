@@ -30,8 +30,7 @@ private slots:
 
 public slots:
     void updatelineedit(int);
-    void processChart(QVector<double>, QVector<double>, QVector<double>, int, int);
-    void processChartColor(QVector<double>, QVector<double>, QVector<double>, int);
+    void processChart(QVector<double>, QVector<double>, QVector<double>, int, int, int);
     void displayMask(QImage);
 
 private:
@@ -54,7 +53,6 @@ private:
     QLineSeries *m_seriesDiscrepancy = nullptr;
     QLineSeries *m_seriesPreviousDerivative = nullptr;
     int m_bufferCounter = 0;
-    int m_bufferCounterColor = 0;
     QChartView *m_bufferChartView = nullptr;
     QValueAxis *m_axisY = nullptr;
     QValueAxis *m_axisX = nullptr;
@@ -63,8 +61,7 @@ private:
     QValueAxis *m_axisDisX = nullptr;
 
 
-    void shiftBuffer(int, int);
-    void shiftBufferColor(int);
+    void shiftBuffer(int, int, int);
 
 };
 #endif // NEWPLAYER_H

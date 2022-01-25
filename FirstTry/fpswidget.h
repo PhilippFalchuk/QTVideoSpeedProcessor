@@ -18,32 +18,12 @@ public slots:
     void processFrame(QVideoFrame frame, int, int);
 
 signals:
-    void frameProcessed(QVector<double>,QVector<double>,QVector<double>, int, int);
+    void frameProcessed(QVector<double>,QVector<double>,QVector<double>, int, int, int);
 
 private:
     QVector<double> m_previousGraphDerivative;
+    QVector<double> m_previousGraphBWA;
     int counterFrame = 0;
-};
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-class FrameProcessorColor : public QObject
-{
-    Q_OBJECT
-
-public:
-    FrameProcessorColor(QObject *parent = nullptr);
-public slots:
-    void processFrameColor(QVideoFrame frame, int, int);
-
-signals:
-    void frameProcessedColor(QVector<double>,QVector<double>,QVector<double>, int);
-
-private:
-    QVector<double> m_previousGraphDerivative;
-    int counterframe = 0;
 };
 
 
@@ -77,18 +57,15 @@ public slots:
     void setZone(int, int);
 
 signals:
-    void frameReady(QVector<double>, QVector<double>, QVector<double>, int, int);
-    void frameReadyColor(QVector<double>, QVector<double>, QVector<double>, int);
+    void frameReady(QVector<double>, QVector<double>, QVector<double>, int, int, int);
     void maskReady(QImage);
     void updatelineedit(int);
 
 private:
     qint32 m_fpsCounter;
     QThread m_processorThread;
-    QThread m_processorThreadColor;
     QThread m_maskThread;
     FrameProcessor m_processor;
-    FrameProcessorColor m_processorColor;
     MaskProcessor m_maskProcessor;
 
     QColor m_backgroundColor;

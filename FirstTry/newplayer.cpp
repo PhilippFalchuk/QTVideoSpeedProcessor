@@ -135,8 +135,7 @@ NewPlayer::NewPlayer(QWidget *parent)
     connect(m_fpsWidget, SIGNAL(updatelineedit(int)), this, SLOT(updatelineedit(int)));
     m_videoProbe->setSource(m_player);
 
-    connect(m_fpsWidget, SIGNAL(frameReady(QVector<double>, QVector<double>, QVector<double>, int, int)), this, SLOT(processChart(QVector<double>, QVector<double>, QVector<double>, int, int)));
-    connect(m_fpsWidget, SIGNAL(frameReadyColor(QVector<double>, QVector<double>, QVector<double>, int)), this, SLOT(processChartColor(QVector<double>, QVector<double>, QVector<double>, int)));
+    connect(m_fpsWidget, SIGNAL(frameReady(QVector<double>, QVector<double>, QVector<double>, int, int, int)), this, SLOT(processChart(QVector<double>, QVector<double>, QVector<double>, int, int, int)));
     connect(m_fpsWidget, SIGNAL(maskReady(QImage)), this, SLOT(displayMask(QImage)));
 
     connect(this, SIGNAL(zoneChanged(int,int)), m_fpsWidget,SLOT(setZone(int,int)));
@@ -176,10 +175,10 @@ void NewPlayer::updatelineedit(int a)
     ui->lineEdit->setText(str);
 }
 
-void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> graphDiscrepancy,QVector<double> graphPreviousDerivative, int shift, int framesCount)
+void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> graphDiscrepancy,QVector<double> graphPreviousDerivative, int shift, int framesCount, int shiftColor)
 {
     ui->label->setText(QString::number(shift));
-    shiftBuffer(shift, framesCount);
+    shiftBuffer(shift, framesCount, shiftColor);
 
 
 //    m_seriesDerivative->clear();
@@ -228,7 +227,7 @@ void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> gr
 }
 
 
-void NewPlayer::shiftBuffer(int shift, int framesCount)
+void NewPlayer::shiftBuffer(int shift, int framesCount, int shiftColor)
 {
 //    if(m_bufferCounter%2)
 //        shift = 50;
@@ -244,20 +243,26 @@ void NewPlayer::shiftBuffer(int shift, int framesCount)
         m_axisY->setRange(-500,500);
         m_bufferChart->addAxis(m_axisY, Qt::AlignLeft);
         m_bufferSeries->attachAxis(m_axisY);
+        m_bufferSeriesColor->attachAxis(m_axisY);
 
         m_axisX = new QValueAxis();
         m_axisX->setRange(0,400);
         m_bufferChart->addAxis(m_axisX, Qt::AlignBottom);
         m_bufferSeries->attachAxis(m_axisX);
+        m_bufferSeriesColor->attachAxis(m_axisX);
     }
 
 
 //    int i = m_bufferCounter%200;
 
     if(!(m_bufferCounter%400))
+    {
         m_bufferSeries->clear();
+        m_bufferSeriesColor->clear();
+    }
 
     m_bufferSeries->append(m_bufferCounter%400, shift);
+    m_bufferSeriesColor->append(m_bufferCounter%400, shiftColor);
 
 //    int g;
 //    if(m_bufferCounter%2)
@@ -299,81 +304,9 @@ void NewPlayer::on_editZone_clicked()
 
 }
 
-void NewPlayer::processChartColor(QVector<double> graphDerivative, QVector<double> graphDiscrepancy,QVector<double> graphPreviousDerivative, int shift)
-{
-
-
-    shiftBufferColor(shift);
-
-//    QLineSeries *series1 = new QLineSeries();
-//    QLineSeries *series2 = new QLineSeries();
-//    QLineSeries *series3 = new QLineSeries();
-
-//    for(int counter = 0; counter < graphDerivative.size(); counter++)
-//    {
-//        series1->append(counter,graphDerivative[counter]);
-//        series3->append(counter,graphPreviousDerivative[counter]);
-//    }
-//    for(int counter = 0; counter < graphDiscrepancy.size(); counter++)
-//    {
-
-//        graphDiscrepancy[counter] = qLn(graphDiscrepancy[counter]);//из-за этого тоже выскакивает nan, и это тоже нужно)
-
-
-//        series2->append(counter,graphDiscrepancy[counter]);
-//    }
-
-//    m_graphChartColor->removeAllSeries();
-//    m_graphChartDiscrepancyColor->removeAllSeries();
-//    m_graphChartPreviousColor->removeAllSeries();
-
-
-//    m_graphChartColor->addSeries(series1);
-//    m_graphChartDiscrepancyColor->addSeries(series2);
-//    m_graphChartPreviousColor->addSeries(series3);
-
-//    m_graphChartColor->createDefaultAxes();
-//    m_graphChartDiscrepancyColor->createDefaultAxes();
-//    m_graphChartPreviousColor->createDefaultAxes();
-
-}
-
-void NewPlayer::shiftBufferColor(int shift)
-{
 
 
 
-
-
-    if(m_bufferCounterColor == 1)
-    {
-        m_bufferSeriesColor->attachAxis(m_axisX);
-        m_bufferSeriesColor->attachAxis(m_axisY);
-    }
-
-
-
-
-    if(!(m_bufferCounterColor%400))
-        m_bufferSeriesColor->clear();
-
-    m_bufferSeriesColor->append(m_bufferCounterColor%400, shift);
-
-
-
-
-
-
-    m_bufferCounterColor++;
-
-
-
-
-
-//    m_bufferChart->removeAllSeries();
-//    m_bufferChart->addSeries(m_bufferSeries);
-//    m_bufferChart->createDefaultAxes();
-}
 
 void NewPlayer::displayMask(QImage maskImage)
 {
