@@ -33,6 +33,10 @@ NewPlayer::NewPlayer(QWidget *parent)
     m_seriesDiscrepancy = new QLineSeries();
     m_seriesPreviousDerivative = new QLineSeries();
 
+    m_seriesColor = new QLineSeries();
+    m_seriesDiscrepancyColor = new QLineSeries();
+    m_seriesPreviousColor = new QLineSeries();
+
 
     m_graphChartDerivative = new QChart();
     m_graphChartDerivative->legend()->hide();
@@ -77,6 +81,10 @@ NewPlayer::NewPlayer(QWidget *parent)
     m_graphChartDiscrepancy->addSeries(m_seriesDiscrepancy);
     m_graphChartPreviousDerivative->addSeries(m_seriesPreviousDerivative);
 
+    m_graphChartColor->addSeries(m_seriesColor);
+    m_graphChartDiscrepancyColor->addSeries(m_seriesDiscrepancyColor);
+    m_graphChartPreviousColor->addSeries(m_seriesPreviousColor);
+
     m_axisDerX = new QValueAxis();
     m_axisDerX->setRange(0,850);
     m_graphChartDerivative->addAxis(m_axisDerX, Qt::AlignBottom);
@@ -108,6 +116,36 @@ NewPlayer::NewPlayer(QWidget *parent)
     m_graphChartDiscrepancy->addAxis(axisDisY, Qt::AlignLeft);
     m_seriesDiscrepancy->attachAxis(axisDisY);
 
+    m_axisColorX = new QValueAxis();
+    m_axisColorX->setRange(0,850);
+    m_graphChartColor->addAxis(m_axisColorX, Qt::AlignBottom);
+    m_seriesColor->attachAxis(m_axisColorX);
+
+    QValueAxis* axisColorY = new QValueAxis();
+    axisColorY->setRange(0,220);
+    m_graphChartColor->addAxis(axisColorY, Qt::AlignLeft);
+    m_seriesColor->attachAxis(axisColorY);
+
+    m_axisPrevColorX = new QValueAxis();
+    m_axisPrevColorX->setRange(0,850);
+    m_graphChartPreviousColor->addAxis(m_axisPrevColorX, Qt::AlignBottom);
+    m_seriesPreviousColor->attachAxis(m_axisPrevColorX);
+
+    QValueAxis* axisPrevColorY = new QValueAxis();
+    axisPrevColorY->setRange(0,220);
+    m_graphChartPreviousColor->addAxis(axisPrevColorY, Qt::AlignLeft);
+    m_seriesPreviousColor->attachAxis(axisPrevColorY);
+
+    m_axisDisColorX = new QValueAxis();
+    m_axisDisColorX->setRange(425,1275);
+    m_graphChartDiscrepancyColor->addAxis(m_axisDisColorX, Qt::AlignBottom);
+    m_seriesDiscrepancyColor->attachAxis(m_axisDisColorX);
+
+    QValueAxis* axisDisColorY = new QValueAxis();
+    axisDisColorY->setRange(0,20000);
+    m_graphChartDiscrepancyColor->addAxis(axisDisColorY, Qt::AlignLeft);
+    m_seriesDiscrepancyColor->attachAxis(axisDisColorY);
+
 
     QChartView *graphChartViewDerivative = new QChartView(m_graphChartDerivative);
     QChartView *graphChartViewDiscrepancy = new QChartView(m_graphChartDiscrepancy);
@@ -136,7 +174,7 @@ NewPlayer::NewPlayer(QWidget *parent)
     connect(m_fpsWidget, SIGNAL(updatelineedit(int)), this, SLOT(updatelineedit(int)));
     m_videoProbe->setSource(m_player);
 
-    connect(m_fpsWidget, SIGNAL(frameReady(QVector<double>, QVector<double>, QVector<double>, int, int, int)), this, SLOT(processChart(QVector<double>, QVector<double>, QVector<double>, int, int, int)));
+    connect(m_fpsWidget, SIGNAL(frameReady(QVector<double>, QVector<double>, QVector<double>, int, int, int,QVector<double>,QVector<double>,QVector<double>)), this, SLOT(processChart(QVector<double>, QVector<double>, QVector<double>, int, int, int,QVector<double>,QVector<double>,QVector<double>)));
     connect(m_fpsWidget, SIGNAL(maskReady(QImage)), this, SLOT(displayMask(QImage)));
 
     connect(this, SIGNAL(zoneChanged(int,int,int)), m_fpsWidget,SLOT(setZone(int,int,int)));
@@ -176,7 +214,7 @@ void NewPlayer::updatelineedit(int a)
     ui->lineEdit->setText(str);
 }
 
-void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> graphDiscrepancy,QVector<double> graphPreviousDerivative, int shift, int framesCount, int shiftColor)
+void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> graphDiscrepancy,QVector<double> graphPreviousDerivative, int shift, int framesCount, int shiftColor,QVector<double> graphBWA, QVector<double> graphPreviousBWA, QVector<double> graphDiscrepancyBWA)
 {
     ui->label->setText(QString::number(shift));
     shiftBuffer(shift, framesCount, shiftColor);
@@ -190,6 +228,10 @@ void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> gr
     QVector<QPointF> pointPreviousDerivativeVector(graphPreviousDerivative.size());
     QVector<QPointF> pointDiscrepancyVector(graphDiscrepancy.size());
 
+    QVector<QPointF> pointColorVector(graphDerivative.size());
+    QVector<QPointF> pointPreviousColorVector(graphPreviousDerivative.size());
+    QVector<QPointF> pointDiscrepancyColorVector(graphDiscrepancy.size());
+
 
 
     for(int counter = 0; counter < graphDerivative.size(); counter++)
@@ -200,6 +242,8 @@ void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> gr
         pointDerivativeVector[counter] = QPointF(counter, graphDerivative[counter]);
         pointPreviousDerivativeVector[counter] = QPointF(counter, graphPreviousDerivative[counter]);
 
+        pointColorVector[counter] = QPointF(counter, graphBWA[counter]);
+        pointPreviousColorVector[counter] = QPointF(counter, graphPreviousBWA[counter]);
     }
     for(int counter = 0; counter < graphDiscrepancy.size(); counter++)
     {
@@ -209,7 +253,11 @@ void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> gr
 
         graphDiscrepancy[counter] = qLn(graphDiscrepancy[counter]);
 
+       //graphDiscrepancyBWA[counter] = qLn(graphDiscrepancyBWA[counter]);
+
         pointDiscrepancyVector[counter] = QPointF(counter, graphDiscrepancy[counter]);
+
+        pointDiscrepancyColorVector[counter] = QPointF(counter, graphDiscrepancyBWA[counter]);
 
     }
 
@@ -222,6 +270,11 @@ void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> gr
     m_seriesDerivative->replace(pointDerivativeVector);
     m_seriesPreviousDerivative->replace(pointPreviousDerivativeVector);
     m_seriesDiscrepancy->replace(pointDiscrepancyVector);
+
+    m_seriesColor->replace(pointColorVector);
+    m_seriesPreviousColor->replace(pointPreviousColorVector);
+    m_seriesDiscrepancyColor->replace(pointDiscrepancyColorVector);
+
 
 
 
@@ -301,9 +354,17 @@ void NewPlayer::on_editZone_clicked()
     m_axisPrevDerX->setRange(0, width -1);
 
     if(!widthOfDis)
+    {
         m_axisDisX->setRange((width*2)/4, ((width*2)/4)*3);
+        m_axisY->setRange( -(width*2)/4 , ((width*2)/4));
+    }
     else
+    {
         m_axisDisX->setRange(((width*2)-widthOfDis)/2, (width*2) - ((width*2)-widthOfDis)/2);
+        m_axisY->setRange( -(widthOfDis/2) , (widthOfDis/2));
+    }
+
+
 
 
     emit zoneChanged(width,height, widthOfDis);

@@ -18,7 +18,7 @@ public slots:
     void processFrame(QVideoFrame frame, int, int, int);
 
 signals:
-    void frameProcessed(QVector<double>,QVector<double>,QVector<double>, int, int, int);
+    void frameProcessed(QVector<double>,QVector<double>,QVector<double>, int, int, int,QVector<double>,QVector<double>,QVector<double>);
 
 private:
     QVector<double> m_previousGraphDerivative;
@@ -57,7 +57,7 @@ public slots:
     void setZone(int, int, int);
 
 signals:
-    void frameReady(QVector<double>, QVector<double>, QVector<double>, int, int, int);
+    void frameReady(QVector<double>, QVector<double>, QVector<double>, int, int, int,QVector<double>,QVector<double>,QVector<double>);
     void maskReady(QImage);
     void updatelineedit(int);
 

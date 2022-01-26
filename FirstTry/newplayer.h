@@ -30,7 +30,7 @@ private slots:
 
 public slots:
     void updatelineedit(int);
-    void processChart(QVector<double>, QVector<double>, QVector<double>, int, int, int);
+    void processChart(QVector<double>, QVector<double>, QVector<double>, int, int, int,QVector<double>,QVector<double>,QVector<double>);
     void displayMask(QImage);
 
 private:
@@ -52,13 +52,19 @@ private:
     QLineSeries *m_seriesDerivative = nullptr;
     QLineSeries *m_seriesDiscrepancy = nullptr;
     QLineSeries *m_seriesPreviousDerivative = nullptr;
+    QLineSeries *m_seriesColor = nullptr;
+    QLineSeries *m_seriesDiscrepancyColor = nullptr;
+    QLineSeries *m_seriesPreviousColor = nullptr;
     int m_bufferCounter = 0;
     QChartView *m_bufferChartView = nullptr;
     QValueAxis *m_axisY = nullptr;
     QValueAxis *m_axisX = nullptr;
     QValueAxis *m_axisDerX = nullptr;
     QValueAxis *m_axisPrevDerX = nullptr;
-    QValueAxis *m_axisDisX = nullptr;
+    QValueAxis *m_axisDisX = nullptr; 
+    QValueAxis *m_axisColorX = nullptr;
+    QValueAxis *m_axisPrevColorX = nullptr;
+    QValueAxis *m_axisDisColorX = nullptr;
 
 
     void shiftBuffer(int, int, int);

@@ -13,7 +13,7 @@ FPSWidget::FPSWidget(QLabel *parent)
     m_processor.moveToThread(&m_processorThread);
     qRegisterMetaType<QVector<double>>("QVector<double>");
     //connect(&m_processor, &FrameProcessor::frameProcessed, this, &FPSWidget::frameReady);
-    connect(&m_processor, SIGNAL(frameProcessed(QVector<double>, QVector<double>,QVector<double>, int, int, int)), this, SIGNAL(frameReady(QVector<double>, QVector<double>, QVector<double>, int, int, int)));
+    connect(&m_processor, SIGNAL(frameProcessed(QVector<double>, QVector<double>,QVector<double>, int, int, int,QVector<double>,QVector<double>,QVector<double>)), this, SIGNAL(frameReady(QVector<double>, QVector<double>, QVector<double>, int, int, int,QVector<double>,QVector<double>,QVector<double>)));
     m_processorThread.start(QThread::LowestPriority);
 
     m_maskProcessor.moveToThread(&m_maskThread);
@@ -188,7 +188,7 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
                 {
 
 
-                        double int1=0,int2=0,int1b = 0, int2b = 0;
+                        double int1=0,int2=0/*,int1b = 0, int2b = 0*/;
                         if(shift<0)
                         {
                             for(int i = 0 ; i < graphDerivative.size(); i++)
@@ -200,8 +200,8 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
                                     int2 += graphDerivative[i + shift]*graphDerivative[i + shift];
 
                                     graphDiscrepancyColor[shift+graphBWA.size()] += (m_previousGraphBWA[i] - graphBWA[i + shift])  *  (m_previousGraphBWA[i] - graphBWA[i + shift]);
-                                    int1b += m_previousGraphBWA[i]*m_previousGraphBWA[i];
-                                    int2b += graphBWA[i + shift]*graphBWA[i + shift];
+//                                    int1b += m_previousGraphBWA[i]*m_previousGraphBWA[i];
+//                                    int2b += graphBWA[i + shift]*graphBWA[i + shift];
                                 }
                             }
                         }
@@ -216,8 +216,8 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
                                     int2 += graphDerivative[i + shift]*graphDerivative[i + shift];
 
                                     graphDiscrepancyColor[shift + graphBWA.size()] += (m_previousGraphBWA[i] - graphBWA[i + shift])*(m_previousGraphBWA[i] - graphBWA[i + shift]);
-                                    int1b += m_previousGraphBWA[i]*m_previousGraphBWA[i];
-                                    int2b += graphBWA[i + shift]*graphBWA[i + shift];
+//                                    int1b += m_previousGraphBWA[i]*m_previousGraphBWA[i];
+//                                    int2b += graphBWA[i + shift]*graphBWA[i + shift];
                                 }
                             }
                         }
@@ -227,10 +227,10 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
                         else
                             graphDiscrepancy[shift+graphDerivative.size()] = NAN;//из-за этого в консоли выскакивают nan, но это убирает завалы невязки))
 
-                        if(int1b*int2b>0)
-                            graphDiscrepancyColor[shift+graphBWA.size()] /= (int1b*int2b);
-                        else
-                            graphDiscrepancyColor[shift+graphBWA.size()] = NAN;//из-за этого в консоли выскакивают nan, но это убирает завалы невязки))
+//                        if(int1b*int2b>0)
+//                            graphDiscrepancyColor[shift+graphBWA.size()] /= (int1b*int2b);
+//                        else
+//                            graphDiscrepancyColor[shift+graphBWA.size()] = NAN;//из-за этого в консоли выскакивают nan, но это убирает завалы невязки))
 
 
 
@@ -283,7 +283,7 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
                 }
 
                 shiftOfDis = indOfMinDis - graphDerivative.size();
-                shiftOfDisColor = indOfMinDisColor - graphDerivative.size() + 1;
+                shiftOfDisColor = indOfMinDisColor - graphBWA.size()+1;
             }
 
 
@@ -296,7 +296,7 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
 //    qDebug()<<t3;
 
 
-    emit frameProcessed(graphDerivative, graphDiscrepancy, m_previousGraphDerivative, shiftOfDis, counterFrame, shiftOfDisColor);
+    emit frameProcessed(graphDerivative, graphDiscrepancy, m_previousGraphDerivative, shiftOfDis, counterFrame, shiftOfDisColor, graphBWA, m_previousGraphBWA, graphDiscrepancyColor);
 
     m_previousGraphDerivative = graphDerivative;
     m_previousGraphBWA = graphBWA;
