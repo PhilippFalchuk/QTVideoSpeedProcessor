@@ -99,9 +99,9 @@
   <widget class="QWidget" name="verticalLayoutWidget_2">
    <property name="geometry">
     <rect>
-     <x>900</x>
-     <y>0</y>
-     <width>160</width>
+     <x>740</x>
+     <y>110</y>
+     <width>207</width>
      <height>148</height>
     </rect>
    </property>
@@ -118,7 +118,7 @@
        <number>1280</number>
       </property>
       <property name="value">
-       <number>1280</number>
+       <number>850</number>
       </property>
      </widget>
     </item>
@@ -134,7 +134,20 @@
        <number>720</number>
       </property>
       <property name="value">
-       <number>720</number>
+       <number>480</number>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QSpinBox" name="spinBox_3">
+      <property name="suffix">
+       <string>  (1/2 - default)</string>
+      </property>
+      <property name="prefix">
+       <string>delta shift: </string>
+      </property>
+      <property name="maximum">
+       <number>1280</number>
       </property>
      </widget>
     </item>

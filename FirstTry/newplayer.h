@@ -20,7 +20,7 @@ public:
     ~NewPlayer();
 
 signals:
-    void zoneChanged(int,int);
+    void zoneChanged(int,int,int);
 
 private slots:
     void on_pushButton_clicked();

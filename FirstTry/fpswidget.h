@@ -15,7 +15,7 @@ class FrameProcessor : public QObject
 public:
     FrameProcessor(QObject *parent = nullptr);
 public slots:
-    void processFrame(QVideoFrame frame, int, int);
+    void processFrame(QVideoFrame frame, int, int, int);
 
 signals:
     void frameProcessed(QVector<double>,QVector<double>,QVector<double>, int, int, int);
@@ -54,7 +54,7 @@ public:
 public slots:
     void processFrame(const QVideoFrame &frame);
     void refreshCounter();
-    void setZone(int, int);
+    void setZone(int, int, int);
 
 signals:
     void frameReady(QVector<double>, QVector<double>, QVector<double>, int, int, int);
@@ -72,6 +72,7 @@ private:
     int m_margin;
     int m_zoneWidth = 0;
     int m_zoneHeight = 0;
+    int m_widthOfDis = 0;
 
 
     // QWidget interface

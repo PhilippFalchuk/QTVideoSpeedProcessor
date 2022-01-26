@@ -15,6 +15,7 @@ NewPlayer::NewPlayer(QWidget *parent)
     m_player->setVideoOutput(m_videoWidget);
 
     ui->horizontalLayout->addWidget(m_videoWidget);
+    m_videoWidget->setVisible(false);
 
     m_fpsWidget = new FPSWidget();
 //    ui->verticalLayout->addWidget(m_fpsWidget);
@@ -98,7 +99,7 @@ NewPlayer::NewPlayer(QWidget *parent)
     m_seriesPreviousDerivative->attachAxis(axisPrevDerY);
 
     m_axisDisX = new QValueAxis();
-    m_axisDisX->setRange(0,1700);
+    m_axisDisX->setRange(425,1275);
     m_graphChartDiscrepancy->addAxis(m_axisDisX, Qt::AlignBottom);
     m_seriesDiscrepancy->attachAxis(m_axisDisX);
 
@@ -138,7 +139,7 @@ NewPlayer::NewPlayer(QWidget *parent)
     connect(m_fpsWidget, SIGNAL(frameReady(QVector<double>, QVector<double>, QVector<double>, int, int, int)), this, SLOT(processChart(QVector<double>, QVector<double>, QVector<double>, int, int, int)));
     connect(m_fpsWidget, SIGNAL(maskReady(QImage)), this, SLOT(displayMask(QImage)));
 
-    connect(this, SIGNAL(zoneChanged(int,int)), m_fpsWidget,SLOT(setZone(int,int)));
+    connect(this, SIGNAL(zoneChanged(int,int,int)), m_fpsWidget,SLOT(setZone(int,int,int)));
 
 
 
@@ -294,13 +295,18 @@ void NewPlayer::on_editZone_clicked()
 {
     int width = ui->spinBox->value();
     int height = ui->spinBox_2->value();
+    int widthOfDis = ui->spinBox_3->value();
 
     m_axisDerX->setRange(0, width -1);
     m_axisPrevDerX->setRange(0, width -1);
-    m_axisDisX->setRange(0, width*2 -2);
+
+    if(!widthOfDis)
+        m_axisDisX->setRange((width*2)/4, ((width*2)/4)*3);
+    else
+        m_axisDisX->setRange(((width*2)-widthOfDis)/2, (width*2) - ((width*2)-widthOfDis)/2);
 
 
-    emit zoneChanged(width,height);
+    emit zoneChanged(width,height, widthOfDis);
 
 }
 

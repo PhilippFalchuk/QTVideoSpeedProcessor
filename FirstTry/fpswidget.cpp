@@ -38,7 +38,7 @@ void FPSWidget::processFrame(const QVideoFrame &frame)
     m_fpsCounter++;
 
     QMetaObject::invokeMethod(&m_processor, "processFrame",
-                              Qt::QueuedConnection, Q_ARG(QVideoFrame, frame), Q_ARG(int, m_zoneWidth), Q_ARG(int, m_zoneHeight));
+                              Qt::QueuedConnection, Q_ARG(QVideoFrame, frame), Q_ARG(int, m_zoneWidth), Q_ARG(int, m_zoneHeight), Q_ARG(int, m_widthOfDis));
 
     QMetaObject::invokeMethod(&m_maskProcessor, "processMask",
                               Qt::QueuedConnection, Q_ARG(QVideoFrame, frame), Q_ARG(int, m_zoneWidth), Q_ARG(int, m_zoneHeight));
@@ -56,10 +56,11 @@ void FPSWidget::refreshCounter()
     m_fpsCounter = 0;
 }
 
-void FPSWidget::setZone(int width, int height)
+void FPSWidget::setZone(int width, int height, int widthOfDis)
 {
     m_zoneWidth = width;
     m_zoneHeight = height;
+    m_widthOfDis = widthOfDis;
 }
 
 
@@ -89,7 +90,7 @@ QTime fromMSec( quint64 totalMsec )
     return QTime( hour, minute, sec, msec );
 }
 
-void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeight)
+void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeight, int widthOfDis)
 {
 //    QTime t1, t3;
 //    quint64 msec;
@@ -134,8 +135,18 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
     int shiftOfDis;
     int shiftOfDisColor;
 
-    int minShiftOfCalc = -(widthOfZone/2);
-    int maxShiftOfCalc = (widthOfZone/2);
+    int minShiftOfCalc;
+    int maxShiftOfCalc;
+    if(!widthOfDis)
+    {
+        minShiftOfCalc = -(widthOfZone/2);
+        maxShiftOfCalc = (widthOfZone/2);
+    }
+    else
+    {
+        minShiftOfCalc = -(widthOfDis/2);
+        maxShiftOfCalc = (widthOfDis/2);
+    }
 
 
     do
