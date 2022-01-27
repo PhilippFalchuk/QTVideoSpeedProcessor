@@ -306,6 +306,7 @@ FrameProcessor::FrameProcessor(QObject *parent)
     : QObject(parent)
 {
 //   m_previousGraphDerivative.resize(852);
+    m_previousGraphBWA.resize(852);
 }
 
 

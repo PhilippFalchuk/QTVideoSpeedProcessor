@@ -220,9 +220,9 @@ void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> gr
     shiftBuffer(shift, framesCount, shiftColor);
 
 
-//    m_seriesDerivative->clear();
-//    m_seriesDiscrepancy->clear();
-//    m_seriesPreviousDerivative->clear();
+////    m_seriesDerivative->clear();
+////    m_seriesDiscrepancy->clear();
+////    m_seriesPreviousDerivative->clear();
 
     QVector<QPointF> pointDerivativeVector(graphDerivative.size());
     QVector<QPointF> pointPreviousDerivativeVector(graphPreviousDerivative.size());
@@ -245,6 +245,7 @@ void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> gr
         pointColorVector[counter] = QPointF(counter, graphBWA[counter]);
         pointPreviousColorVector[counter] = QPointF(counter, graphPreviousBWA[counter]);
     }
+
     for(int counter = 0; counter < graphDiscrepancy.size(); counter++)
     {
 
