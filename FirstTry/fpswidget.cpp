@@ -199,7 +199,7 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
                                     int1 += m_previousGraphDerivative[i]*m_previousGraphDerivative[i];
                                     int2 += graphDerivative[i + shift]*graphDerivative[i + shift];
 
-                                    graphDiscrepancyColor[shift+graphBWA.size()] += (m_previousGraphBWA[i] - graphBWA[i + shift])  *  (m_previousGraphBWA[i] - graphBWA[i + shift]);
+                                    graphDiscrepancyColor[shift+graphBWA.size()-1] += (m_previousGraphBWA[i] - graphBWA[i + shift])  *  (m_previousGraphBWA[i] - graphBWA[i + shift]);
 //                                    int1b += m_previousGraphBWA[i]*m_previousGraphBWA[i];
 //                                    int2b += graphBWA[i + shift]*graphBWA[i + shift];
                                 }
@@ -215,7 +215,7 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
                                     int1 += m_previousGraphDerivative[i]*m_previousGraphDerivative[i];
                                     int2 += graphDerivative[i + shift]*graphDerivative[i + shift];
 
-                                    graphDiscrepancyColor[shift + graphBWA.size()] += (m_previousGraphBWA[i] - graphBWA[i + shift])*(m_previousGraphBWA[i] - graphBWA[i + shift]);
+                                    graphDiscrepancyColor[shift + graphBWA.size()-1] += (m_previousGraphBWA[i] - graphBWA[i + shift])*(m_previousGraphBWA[i] - graphBWA[i + shift]);
 //                                    int1b += m_previousGraphBWA[i]*m_previousGraphBWA[i];
 //                                    int2b += graphBWA[i + shift]*graphBWA[i + shift];
                                 }
