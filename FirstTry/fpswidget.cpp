@@ -129,6 +129,7 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
     QVector<double> graphDiscrepancy(graphDerivative.size()*2);
     QVector<double> cutDiscrepancy(graphDerivative.size());
     m_previousGraphDerivative.resize(graphDerivative.size());
+    m_previousGraphBWA.resize(graphBWA.size());
     QVector<double> graphDiscrepancyColor(graphBWA.size()*2);
     int indOfMinDis;
     int indOfMinDisColor;
@@ -306,6 +307,7 @@ FrameProcessor::FrameProcessor(QObject *parent)
     : QObject(parent)
 {
 //   m_previousGraphDerivative.resize(852);
+
 }
 
 

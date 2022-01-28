@@ -142,7 +142,7 @@ NewPlayer::NewPlayer(QWidget *parent)
     m_seriesDiscrepancyColor->attachAxis(m_axisDisColorX);
 
     QValueAxis* axisDisColorY = new QValueAxis();
-    axisDisColorY->setRange(0,20000);
+    axisDisColorY->setRange(-10,20);
     m_graphChartDiscrepancyColor->addAxis(axisDisColorY, Qt::AlignLeft);
     m_seriesDiscrepancyColor->attachAxis(axisDisColorY);
 
@@ -253,7 +253,7 @@ void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> gr
 
         graphDiscrepancy[counter] = qLn(graphDiscrepancy[counter]);
 
-       //graphDiscrepancyBWA[counter] = qLn(graphDiscrepancyBWA[counter]);
+       graphDiscrepancyBWA[counter] = qLn(graphDiscrepancyBWA[counter]);
 
         pointDiscrepancyVector[counter] = QPointF(counter, graphDiscrepancy[counter]);
 
@@ -356,11 +356,13 @@ void NewPlayer::on_editZone_clicked()
     if(!widthOfDis)
     {
         m_axisDisX->setRange((width*2)/4, ((width*2)/4)*3);
+        m_axisDisColorX->setRange((width*2)/4, ((width*2)/4)*3);
         m_axisY->setRange( -(width*2)/4 , ((width*2)/4));
     }
     else
     {
         m_axisDisX->setRange(((width*2)-widthOfDis)/2, (width*2) - ((width*2)-widthOfDis)/2);
+        m_axisDisColorX->setRange(((width*2)-widthOfDis)/2, (width*2) - ((width*2)-widthOfDis)/2);
         m_axisY->setRange( -(widthOfDis/2) , (widthOfDis/2));
     }
 
