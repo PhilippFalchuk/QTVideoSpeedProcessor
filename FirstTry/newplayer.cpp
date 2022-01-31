@@ -17,7 +17,7 @@ NewPlayer::NewPlayer(QWidget *parent)
     ui->horizontalLayout->addWidget(m_videoWidget);
     m_videoWidget->setVisible(true);
 
-    m_fpsWidget = new FPSWidget();
+    m_threadHandler = new ThreadHandler();
 //    ui->verticalLayout->addWidget(m_fpsWidget);
 
     m_series = new QLineSeries();
@@ -170,14 +170,14 @@ NewPlayer::NewPlayer(QWidget *parent)
 
 
     m_videoProbe = new QVideoProbe(this);
-    connect(m_videoProbe, &QVideoProbe::videoFrameProbed, m_fpsWidget, &FPSWidget::processFrame);
-    connect(m_fpsWidget, SIGNAL(updatelineedit(int)), this, SLOT(updatelineedit(int)));
+    connect(m_videoProbe, &QVideoProbe::videoFrameProbed, m_threadHandler, &ThreadHandler::processFrame);
+    connect(m_threadHandler, SIGNAL(updatelineedit(int)), this, SLOT(updatelineedit(int)));
     m_videoProbe->setSource(m_player);
 
-    connect(m_fpsWidget, SIGNAL(frameReady(QVector<double>, QVector<double>, QVector<double>, int, int, int,QVector<double>,QVector<double>,QVector<double>)), this, SLOT(processChart(QVector<double>, QVector<double>, QVector<double>, int, int, int,QVector<double>,QVector<double>,QVector<double>)));
-    connect(m_fpsWidget, SIGNAL(maskReady(QImage)), this, SLOT(displayMask(QImage)));
+    connect(m_threadHandler, SIGNAL(frameReady(QVector<double>, QVector<double>, QVector<double>, int, int, int,QVector<double>,QVector<double>,QVector<double>)), this, SLOT(processChart(QVector<double>, QVector<double>, QVector<double>, int, int, int,QVector<double>,QVector<double>,QVector<double>)));
+    connect(m_threadHandler, SIGNAL(maskReady(QImage)), this, SLOT(displayMask(QImage)));
 
-    connect(this, SIGNAL(zoneChanged(int,int,int)), m_fpsWidget,SLOT(setZone(int,int,int)));
+    connect(this, SIGNAL(zoneChanged(int,int,int)), m_threadHandler,SLOT(setZone(int,int,int)));
 
 
 

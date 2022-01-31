@@ -5,7 +5,7 @@
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
 #include <QVideoProbe>
-#include "fpswidget.h"
+#include "threadhandler.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class NewPlayer; }
@@ -38,7 +38,7 @@ private:
     QVideoWidget *m_videoWidget = nullptr;
     QMediaPlayer *m_player = nullptr;
     QVideoProbe *m_videoProbe = nullptr;
-    FPSWidget *m_fpsWidget = nullptr;
+    ThreadHandler *m_threadHandler = nullptr;
     QChart *m_graphChartDerivative = nullptr;
     QChart *m_graphChartDiscrepancy = nullptr;
     QChart *m_graphChartPreviousDerivative = nullptr;
