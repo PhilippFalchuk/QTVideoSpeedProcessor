@@ -24,11 +24,10 @@ private:
     QVector<double> m_previousGraphDerivative;
     QVector<double> m_previousGraphBWA;
     int m_counterFrame = 0;
-    bool m_previousShiftIsMinus = false;
-    bool m_previousShiftIsPlus = false;
-    bool m_previousShiftIsZero = true;
+    int m_previousShift = 0;
     int m_counterImageVector = 0;
     int m_counterZeroes = 0;
+    bool m_recordStarted = false;
     QVector<QImage> m_mergedImageVector;
 };
 

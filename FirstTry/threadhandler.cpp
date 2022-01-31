@@ -184,6 +184,7 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
             }
 
 
+
             if(!m_previousGraphDerivative.isEmpty() && !m_previousGraphBWA.isEmpty())
             {
                 for(int shift = minShiftOfCalc; shift < maxShiftOfCalc; shift++)
@@ -289,48 +290,74 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                if(m_counterFrame > 4)
-                {
-                    if(shiftOfDisColor == 0)
-                        m_counterZeroes++;
+//                if(m_counterFrame > 4)
+//                {
+//                    if(shiftOfDis == 0 && m_recordStarted)
+//                        m_counterZeroes++;
 
-                    if(m_previousShiftIsMinus && m_counterZeroes >7)
-                    {
-                        QImage mergedImage(4000,720,QImage::Format_RGB32);
-                        mergedImage.fill(Qt::black);
-                        QString str = QDir::homePath() + "/mergedImages/" + QString::number(m_counterFrame) + ".bmp";
+//                    if( (/*m_previousShift > 3 || */m_previousShift < -3) && m_counterZeroes > 25)
+//                    {
+//                        QImage mergedImage(4000,720,QImage::Format_RGB32);
+//                        mergedImage.fill(Qt::black);
+//                        QString str = QDir::homePath() + "/mergedImages/" + QString::number(m_counterFrame) + ".bmp";
+////                        mergedImage.save(str, "BMP");
+//                        QPainter painter(&mergedImage);
+
+//                        if(m_previousShift < -3)
+//                        {
+//                            int pointerOfDrawing = 0;
+//                            for(int i = 0; i < m_counterImageVector; i++)
+//                            {
+//                                painter.drawImage(pointerOfDrawing, 0, m_mergedImageVector[i]);
+//                                pointerOfDrawing += m_mergedImageVector[i].width();
+//                            }
+//                        }/*else if(m_previousShift > 3)
+//                        {
+//                            int pointerOfDrawing = mergedImage.width();
+//                            for(int i = m_counterImageVector - 1; i > 0 - 1; i--)
+//                            {
+//                                pointerOfDrawing -= m_mergedImageVector[i].width();
+//                                painter.drawImage(pointerOfDrawing, 0, m_mergedImageVector[i]);
+//                            }
+//                        }*/
+
 //                        mergedImage.save(str, "BMP");
-                        QPainter painter(&mergedImage);
-                        int pointerOfDrawing = 0;
-                        for(int i = 0; i < m_counterImageVector; i++)
-                        {
-                            painter.drawImage(pointerOfDrawing, 0, m_mergedImageVector[i]);
-                            pointerOfDrawing += m_mergedImageVector[i].width();
-                        }
-                        mergedImage.save(str, "BMP");
 
-                        //m_mergedImageVector.clear();
+//                        m_mergedImageVector.clear();
+//                        m_mergedImageVector.resize(200);
 
-                        m_previousShiftIsMinus = false;
-                        m_previousShiftIsZero = true;
-                        m_counterZeroes = 0;
-                    }
+//                        m_previousShift = 0;
+//                        m_counterZeroes = 0;
+//                        m_recordStarted = false;
 
-                    if(shiftOfDisColor < -2)
-                    {
-                        QImage cropped;
-                        cropped = image.copy(centerOfImageWidth + shiftOfDisColor, 0, -shiftOfDisColor, 720).mirrored(false,true);
-                        m_previousShiftIsMinus = true;
-                        m_previousShiftIsPlus = false;
-                        m_previousShiftIsZero = false;
-//                        QString str = QDir::homePath() + "/images/" + QString::number(m_counterFrame) + ".bmp";
-//                        qDebug() << str;
-                        m_mergedImageVector[m_counterImageVector] = cropped;
-                        m_counterImageVector++;
-                    }
+//                    }
+
+//                    if(shiftOfDis < -3)
+//                    {
+//                        QImage cropped;
+//                        cropped = image.copy(centerOfImageWidth + shiftOfDis, 0, -shiftOfDis, 720).mirrored(false,true);
+//                        m_previousShift = shiftOfDis;
+////                        QString str = QDir::homePath() + "/images/" + QString::number(m_counterFrame) + ".bmp";
+////                        qDebug() << str;
+//                        m_mergedImageVector[m_counterImageVector] = cropped;
+//                        m_counterImageVector++;
+//                        m_recordStarted = true;
+//                    }
+
+////                    if(shiftOfDis > 3)
+////                    {
+////                        QImage cropped;
+////                        cropped = image.copy(centerOfImageWidth, 0, shiftOfDis, 720).mirrored(false,true);
+////                        m_previousShift = shiftOfDis;
+//////                        QString str = QDir::homePath() + "/images/" + QString::number(m_counterFrame) + ".bmp";
+//////                        qDebug() << str;
+////                        m_mergedImageVector[m_counterImageVector] = cropped;
+////                        m_counterImageVector++;
+////                        m_recordStarted = true;
+////                    }
 
 
-                }
+//                }
 
 
             }
