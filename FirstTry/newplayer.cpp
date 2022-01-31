@@ -15,7 +15,7 @@ NewPlayer::NewPlayer(QWidget *parent)
     m_player->setVideoOutput(m_videoWidget);
 
     ui->horizontalLayout->addWidget(m_videoWidget);
-    m_videoWidget->setVisible(false);
+    m_videoWidget->setVisible(true);
 
     m_fpsWidget = new FPSWidget();
 //    ui->verticalLayout->addWidget(m_fpsWidget);

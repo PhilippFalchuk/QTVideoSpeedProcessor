@@ -17,7 +17,7 @@ FPSWidget::FPSWidget(QLabel *parent)
     m_processorThread.start(QThread::LowestPriority);
 
     m_maskProcessor.moveToThread(&m_maskThread);
-    qRegisterMetaType<QImage>("QImage");
+    //qRegisterMetaType<QImage>("QImage");
     connect(&m_maskProcessor, SIGNAL(maskProcessed(QImage)), this, SIGNAL(maskReady(QImage)));
     m_maskThread.start(QThread::LowestPriority);
 
@@ -96,10 +96,11 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
 //    quint64 msec;
 //    t1 = QTime::currentTime();
 
-    counterFrame++;
+    m_counterFrame++;
 
     int widthOfImage = 1280;
     int heightOfImage = 720;
+    int centerOfImageWidth = widthOfImage/2;
 
     int widthOfZone;
     int heightOfZone;
@@ -285,6 +286,53 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
 
                 shiftOfDis = indOfMinDis - graphDerivative.size();
                 shiftOfDisColor = indOfMinDisColor - graphBWA.size()+1;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                if(m_counterFrame > 4)
+                {
+                    if(shiftOfDisColor == 0)
+                        m_counterZeroes++;
+
+                    if(m_previousShiftIsMinus && m_counterZeroes >7)
+                    {
+                        QImage mergedImage(4000,720,QImage::Format_RGB32);
+                        mergedImage.fill(Qt::black);
+                        QString str = QDir::homePath() + "/mergedImages/" + QString::number(m_counterFrame) + ".bmp";
+//                        mergedImage.save(str, "BMP");
+                        QPainter painter(&mergedImage);
+                        int pointerOfDrawing = 0;
+                        for(int i = 0; i < m_counterImageVector; i++)
+                        {
+                            painter.drawImage(pointerOfDrawing, 0, m_mergedImageVector[i]);
+                            pointerOfDrawing += m_mergedImageVector[i].width();
+                        }
+                        mergedImage.save(str, "BMP");
+
+                        //m_mergedImageVector.clear();
+
+                        m_previousShiftIsMinus = false;
+                        m_previousShiftIsZero = true;
+                        m_counterZeroes = 0;
+                    }
+
+                    if(shiftOfDisColor < -2)
+                    {
+                        QImage cropped;
+                        cropped = image.copy(centerOfImageWidth + shiftOfDisColor, 0, -shiftOfDisColor, 720).mirrored(false,true);
+                        m_previousShiftIsMinus = true;
+                        m_previousShiftIsPlus = false;
+                        m_previousShiftIsZero = false;
+//                        QString str = QDir::homePath() + "/images/" + QString::number(m_counterFrame) + ".bmp";
+//                        qDebug() << str;
+                        m_mergedImageVector[m_counterImageVector] = cropped;
+                        m_counterImageVector++;
+                    }
+
+
+                }
+
+
             }
 
 
@@ -297,7 +345,7 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
 //    qDebug()<<t3;
 
 
-    emit frameProcessed(graphDerivative, graphDiscrepancy, m_previousGraphDerivative, shiftOfDis, counterFrame, shiftOfDisColor, graphBWA, m_previousGraphBWA, graphDiscrepancyColor);
+    emit frameProcessed(graphDerivative, graphDiscrepancy, m_previousGraphDerivative, shiftOfDis, m_counterFrame, shiftOfDisColor, graphBWA, m_previousGraphBWA, graphDiscrepancyColor);
 
     m_previousGraphDerivative = graphDerivative;
     m_previousGraphBWA = graphBWA;
@@ -307,7 +355,7 @@ FrameProcessor::FrameProcessor(QObject *parent)
     : QObject(parent)
 {
 //   m_previousGraphDerivative.resize(852);
-
+    m_mergedImageVector.resize(200);
 }
 
 
