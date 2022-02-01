@@ -19,6 +19,7 @@ public slots:
 
 signals:
     void frameProcessed(QVector<double>,QVector<double>,QVector<double>, int, int, int,QVector<double>,QVector<double>,QVector<double>);
+    void shiftReady(int);
 
 private:
     QVector<double> m_previousGraphDerivative;
@@ -56,6 +57,8 @@ public:
     ThreadHandler(QLabel *parent = nullptr);
     ~ThreadHandler();
 
+    FrameProcessor m_processor;
+
 public slots:
     void processFrame(const QVideoFrame &frame);
     void refreshCounter();
@@ -70,7 +73,6 @@ private:
     qint32 m_fpsCounter;
     QThread m_processorThread;
     QThread m_maskThread;
-    FrameProcessor m_processor;
     MaskProcessor m_maskProcessor;
 
     QColor m_backgroundColor;

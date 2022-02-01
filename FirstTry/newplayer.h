@@ -6,6 +6,7 @@
 #include <QMediaPlaylist>
 #include <QVideoProbe>
 #include "threadhandler.h"
+#include "comportthread.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class NewPlayer; }
@@ -21,12 +22,15 @@ public:
 
 signals:
     void zoneChanged(int,int,int);
+    void portChanged(const QString &portName);
 
 private slots:
     void on_pushButton_clicked();
 
     void on_pushButton_2_clicked();
     void on_editZone_clicked();
+
+    void on_portPushButton_clicked();
 
 public slots:
     void updatelineedit(int);
@@ -65,6 +69,9 @@ private:
     QValueAxis *m_axisColorX = nullptr;
     QValueAxis *m_axisPrevColorX = nullptr;
     QValueAxis *m_axisDisColorX = nullptr;
+
+    ComPortThread m_comThread;
+
 
 
     void shiftBuffer(int, int, int);

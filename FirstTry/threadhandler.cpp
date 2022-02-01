@@ -21,6 +21,7 @@ ThreadHandler::ThreadHandler(QLabel *parent)
     connect(&m_maskProcessor, SIGNAL(maskProcessed(QImage)), this, SIGNAL(maskReady(QImage)));
     m_maskThread.start(QThread::LowestPriority);
 
+
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &ThreadHandler::refreshCounter);
     timer->start(1000);
@@ -359,7 +360,7 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
 
 //                }
 
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             }
 
 
@@ -376,6 +377,8 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
 
     m_previousGraphDerivative = graphDerivative;
     m_previousGraphBWA = graphBWA;
+
+    emit shiftReady(shiftOfDis);
 }
 
 FrameProcessor::FrameProcessor(QObject *parent)

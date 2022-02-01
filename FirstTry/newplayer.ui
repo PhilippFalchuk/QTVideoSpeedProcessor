@@ -78,7 +78,7 @@
    <property name="geometry">
     <rect>
      <x>910</x>
-     <y>300</y>
+     <y>20</y>
      <width>31</width>
      <height>41</height>
     </rect>
@@ -183,6 +183,28 @@
    <property name="text">
     <string>TextLabel</string>
    </property>
+  </widget>
+  <widget class="QWidget" name="gridLayoutWidget_3">
+   <property name="geometry">
+    <rect>
+     <x>760</x>
+     <y>260</y>
+     <width>251</width>
+     <height>121</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="comPortLayout">
+    <item row="0" column="0">
+     <widget class="QComboBox" name="comboBox"/>
+    </item>
+    <item row="0" column="1">
+     <widget class="QPushButton" name="portPushButton">
+      <property name="text">
+       <string>change port</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>

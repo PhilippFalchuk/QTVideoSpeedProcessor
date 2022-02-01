@@ -2,6 +2,7 @@
 #include "ui_newplayer.h"
 #include "videowidget.h"
 #include <QtMath>
+#include <QSerialPortInfo>
 
 NewPlayer::NewPlayer(QWidget *parent)
     : QWidget(parent)
@@ -185,6 +186,19 @@ NewPlayer::NewPlayer(QWidget *parent)
 
     ui->imageLabel->setBackgroundRole(QPalette::Dark);
     ui->imageLabel->setScaledContents(true);
+
+
+
+
+    const auto infos = QSerialPortInfo::availablePorts();
+    for (const QSerialPortInfo &info : infos)
+        ui->comboBox->addItem(info.portName());
+
+
+    connect(this, &NewPlayer::portChanged, &m_comThread, &ComPortThread::changePort);
+
+    connect(&m_threadHandler->m_processor, &FrameProcessor::shiftReady, &m_comThread, &ComPortThread::sendShift);
+
 
 }
 
@@ -381,5 +395,11 @@ void NewPlayer::displayMask(QImage maskImage)
 {
     ui->imageLabel->setPixmap(QPixmap::fromImage(maskImage.mirrored(false,true)));
 //    qDebug << outputPixmap;
+}
+
+
+void NewPlayer::on_portPushButton_clicked()
+{
+    emit portChanged(ui->comboBox->currentText());
 }
 
