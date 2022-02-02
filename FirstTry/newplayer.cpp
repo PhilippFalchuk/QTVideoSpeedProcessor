@@ -227,7 +227,7 @@ void NewPlayer::on_pushButton_clicked()
 {
     if(QFile::exists(m_pathToUrl))
     {
-    m_player->setMedia(QUrl("rtsp://user:h5106120@192.168.0.228:554/ISAPI/Streaming/Channels/101"));
+    m_player->setMedia(QUrl(m_pathToUrl));
     m_player->play();
     }
     else
