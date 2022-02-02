@@ -3,6 +3,7 @@
 #include "videowidget.h"
 #include <QtMath>
 #include <QSerialPortInfo>
+#include <QFile>
 
 NewPlayer::NewPlayer(QWidget *parent)
     : QWidget(parent)
@@ -200,6 +201,20 @@ NewPlayer::NewPlayer(QWidget *parent)
     connect(&m_threadHandler->m_processor, &FrameProcessor::shiftReady, &m_comThread, &ComPortThread::sendShift);
 
 
+    QFile fileIn(m_pathToUrl);
+
+    if(fileIn.open(QIODevice::ReadOnly))
+    {
+        QTextStream in(&fileIn);
+        while(!fileIn.atEnd())
+        {
+            QString line = in.readLine();
+            m_pathToUrl = line;
+        }
+    }
+    //qDebug()<< QDir::currentPath();
+    qDebug()<< m_pathToUrl;
+
 }
 
 NewPlayer::~NewPlayer()
@@ -210,8 +225,16 @@ NewPlayer::~NewPlayer()
 
 void NewPlayer::on_pushButton_clicked()
 {
-    m_player->setMedia(QUrl("rtsp://user:h5106120@192.168.0.228:554/ISAPI/Streaming/Channels/101"));
+    if(QFile::exists(m_pathToUrl))
+    {
+    m_player->setMedia(QUrl(m_pathToUrl));
     m_player->play();
+    }
+    else
+    {
+        m_player->setMedia(QUrl("rtsp://user:h5106120@192.168.0.228:554/ISAPI/Streaming/Channels/101"));
+        m_player->play();
+    }
 //    QPushButton *btn = new QPushButton(m_videoWidget);
 //    btn->setText("sdfasfasdfd\n\n\n\n\n\n\nfsadfasdfasffda");
 //    btn->setVisible(true);

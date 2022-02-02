@@ -73,6 +73,10 @@ private:
     ComPortThread m_comThread;
 
 
+    QString m_pathToUrl = QDir::currentPath() + "/urlEdit.txt";
+
+
+
 
     void shiftBuffer(int, int, int);
 

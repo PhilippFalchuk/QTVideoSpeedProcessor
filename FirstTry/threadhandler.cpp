@@ -130,6 +130,11 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
     QVector<double> graphDerivative(graphBWA.size() - 1);
     QVector<double> graphDiscrepancy(graphDerivative.size()*2);
     QVector<double> cutDiscrepancy(graphDerivative.size());
+
+    QVector<double> graphBWAVertical(heightOfZone);
+    QVector<double> graphDerivativeVertical(graphBWAVertical.size() - 1);
+    QVector<double> graphDiscrepancyVertical(graphDerivativeVertical.size()*2);
+
     m_previousGraphDerivative.resize(graphDerivative.size());
     m_previousGraphBWA.resize(graphBWA.size());
     QVector<double> graphDiscrepancyColor(graphBWA.size()*2);
@@ -174,6 +179,14 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
 
             }
 
+            for(int x = startOfZoneWidth; x < image.width() - startOfZoneWidth; ++x)
+            {
+                for(int y = startOfZoneHeight; y < image.height()- startOfZoneHeight - 1; y++)
+                {
+                    graphBWAVertical[y-startOfZoneHeight] += qGray(image.pixel(x,y))/(static_cast<double>(heightOfZone));
+                }
+            }
+
 
 
             int sizeBWA = graphBWA.size();
@@ -182,6 +195,13 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
                 double delta = graphBWA[counter + 1] - graphBWA[counter];
 
                 graphDerivative[counter] = delta;
+            }
+
+            for(int counter = 0; counter < graphBWAVertical.size() - 1;counter++)
+            {
+                double delta = graphBWAVertical[counter + 1] - graphBWAVertical[counter];
+
+                graphDerivativeVertical[counter] = delta;
             }
 
 
@@ -373,7 +393,7 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
 //    qDebug()<<t3;
 
 
-    emit frameProcessed(graphDerivative, graphDiscrepancy, m_previousGraphDerivative, shiftOfDis, m_counterFrame, shiftOfDisColor, graphBWA, m_previousGraphBWA, graphDiscrepancyColor);
+    emit frameProcessed(graphDerivative, graphDiscrepancy, m_previousGraphDerivative, shiftOfDis, m_counterFrame, shiftOfDisColor, graphBWA, m_previousGraphBWA , graphDiscrepancyColor);
 
     m_previousGraphDerivative = graphDerivative;
     m_previousGraphBWA = graphBWA;
