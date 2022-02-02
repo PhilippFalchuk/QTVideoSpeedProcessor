@@ -209,11 +209,12 @@ NewPlayer::NewPlayer(QWidget *parent)
         while(!fileIn.atEnd())
         {
             QString line = in.readLine();
-            m_pathToUrl = line;
+            m_url = line;
         }
     }
     //qDebug()<< QDir::currentPath();
     qDebug()<< m_pathToUrl;
+    qDebug()<< m_url;
 
 }
 
@@ -227,11 +228,13 @@ void NewPlayer::on_pushButton_clicked()
 {
     if(QFile::exists(m_pathToUrl))
     {
-    m_player->setMedia(QUrl(m_pathToUrl));
+        qDebug() << "else";
+    m_player->setMedia(QUrl(m_url));
     m_player->play();
     }
     else
     {
+        qDebug() << "default";
         m_player->setMedia(QUrl("rtsp://user:h5106120@192.168.0.228:554/ISAPI/Streaming/Channels/101"));
         m_player->play();
     }
