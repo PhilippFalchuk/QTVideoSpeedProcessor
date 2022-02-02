@@ -393,7 +393,7 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
 //    qDebug()<<t3;
 
 
-    emit frameProcessed(graphDerivative, graphDiscrepancy, m_previousGraphDerivative, shiftOfDis, m_counterFrame, shiftOfDisColor, graphBWA, m_previousGraphBWA , graphDiscrepancyColor);
+    //emit frameProcessed(graphDerivative, graphDiscrepancy, m_previousGraphDerivative, shiftOfDis, m_counterFrame, shiftOfDisColor, graphBWA, m_previousGraphBWA , graphDiscrepancyColor);
 
     m_previousGraphDerivative = graphDerivative;
     m_previousGraphBWA = graphBWA;
