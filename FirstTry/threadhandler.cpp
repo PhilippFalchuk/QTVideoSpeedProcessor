@@ -158,7 +158,7 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
             break;
 
         QImage::Format imageFormat =QVideoFrame::imageFormatFromPixelFormat(frame.pixelFormat());
-        //qDebug()<<imageFormat;
+//        qDebug()<<imageFormat;
         if(imageFormat != QImage::Format_Invalid)
         {
             QImage image/* = frame.image();*/(frame.bits(), frame.width(), frame.height(), imageFormat);

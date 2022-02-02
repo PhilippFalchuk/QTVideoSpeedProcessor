@@ -1,5 +1,5 @@
 #include "comportthread.h"
-
+#include <QDebug>
 #include <QSerialPort>
 
 ComPortThread::ComPortThread(QObject *parent)
@@ -58,9 +58,10 @@ void ComPortThread::run()
 
 
 
-            const QByteArray requestData = QByteArray::number(currentRequest);
+            const char requestData = currentRequest;
+            qDebug()<< requestData<< " " << currentRequest;
+            serial.write(&requestData,1);
 
-            serial.write(requestData);
             serial.waitForBytesWritten();
 
 
