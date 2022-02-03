@@ -167,24 +167,28 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
         if(imageFormat != QImage::Format_Invalid)
         {
             QImage image/* = frame.image();*/(frame.bits(), frame.width(), frame.height(), imageFormat);
-            image = image.convertToFormat(QImage::Format_RGB32);
+            //image = image.convertToFormat(QImage::Format_RGB32);
 
 
-            for (int y = startOfZoneHeight; y < image.height() - startOfZoneHeight; ++y)
+            for(int x = startOfZoneWidth; x < image.width() - startOfZoneWidth -1; x++)
             {
-             for(int x = startOfZoneWidth; x < image.width() - startOfZoneWidth -1; x++)
+             for (int y = startOfZoneHeight; y < image.height() - startOfZoneHeight-1; y++)
              {
-                 graphBWA[x - startOfZoneWidth] += qGray(image.pixel(x,y))/(static_cast<double>(heightOfZone));
+                 graphBWA[x - startOfZoneWidth] += qGray(image.pixel(x,y));//((image.pixel(x,y)))&0x000000FF;//+((image.pixel(x,y)>>8))&0x000000FF
+                         //+((image.pixel(x,y)>>16))&0x000000FF;//qGray(image.pixel(x,y));
+                 //graphBWA[x - startOfZoneWidth] += qGray(image.pixel(x,y));
              }
-
+             graphBWA[x - startOfZoneWidth]/=(static_cast<double>(heightOfZone));
             }
 
-            for(int x = startOfZoneWidth; x < image.width() - startOfZoneWidth; ++x)
+
+            for(int y = startOfZoneHeight; y < image.height()- startOfZoneHeight - 1; y++)
             {
-                for(int y = startOfZoneHeight; y < image.height()- startOfZoneHeight - 1; y++)
+                for(int x = startOfZoneWidth; x < image.width() - startOfZoneWidth-1; x++)
                 {
-                    graphBWAVertical[y-startOfZoneHeight] += qGray(image.pixel(x,y))/(static_cast<double>(heightOfZone));
+                    graphBWAVertical[y-startOfZoneHeight] += qGray(image.pixel(x,y));//((image.pixel(x,y)))&0x000000FF;
                 }
+                graphBWAVertical[y-startOfZoneHeight] /=(static_cast<double>(heightOfZone));
             }
 
 
