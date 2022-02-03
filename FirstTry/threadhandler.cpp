@@ -13,7 +13,7 @@ ThreadHandler::ThreadHandler(QLabel *parent)
     m_processor.moveToThread(&m_processorThread);
     qRegisterMetaType<QVector<double>>("QVector<double>");
     //connect(&m_processor, &FrameProcessor::frameProcessed, this, &FPSWidget::frameReady);
-    connect(&m_processor, SIGNAL(frameProcessed(QVector<double>, QVector<double>,QVector<double>, int, int, int,QVector<double>,QVector<double>,QVector<double>)), this, SIGNAL(frameReady(QVector<double>, QVector<double>, QVector<double>, int, int, int,QVector<double>,QVector<double>,QVector<double>)));
+    connect(&m_processor, SIGNAL(frameProcessed(QVector<double>,QVector<double>,QVector<double>, int, int)), this, SIGNAL(frameReady(QVector<double>,QVector<double>,QVector<double>, int, int)));
     m_processorThread.start(QThread::LowestPriority);
 
     m_maskProcessor.moveToThread(&m_maskThread);
@@ -22,9 +22,9 @@ ThreadHandler::ThreadHandler(QLabel *parent)
     m_maskThread.start(QThread::LowestPriority);
 
 
-    QTimer *timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, &ThreadHandler::refreshCounter);
-    timer->start(1000);
+    //QTimer *timer = new QTimer(this);
+    //connect(timer, &QTimer::timeout, this, &ThreadHandler::refreshCounter);
+    //timer->start(1000);
 
 }
 
@@ -170,15 +170,34 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
             //image = image.convertToFormat(QImage::Format_RGB32);
 
 
-            for(int x = startOfZoneWidth; x < image.width() - startOfZoneWidth -1; x++)
+//            for(int x = startOfZoneWidth; x < widthOfImage - startOfZoneWidth -1; x++)
+//            {
+//                int temp=0;
+//             for (int y = startOfZoneHeight; y < heightOfImage - startOfZoneHeight-1; y++)
+//             {
+
+//                 temp += qGray(image.pixel(x,y));//((image.pixel(x,y)))&0x000000FF;//+((image.pixel(x,y)>>8))&0x000000FF
+//                         //+((image.pixel(x,y)>>16))&0x000000FF;//qGray(image.pixel(x,y));
+//                 //graphBWA[x - startOfZoneWidth] += qGray(image.pixel(x,y));
+//             }
+//             graphBWA[x - startOfZoneWidth]=static_cast<double>(temp/heightOfZone);
+//            }
+
+            for(int y = startOfZoneHeight; y < heightOfImage - startOfZoneHeight - 1; y ++)
             {
-             for (int y = startOfZoneHeight; y < image.height() - startOfZoneHeight-1; y++)
-             {
-                 graphBWA[x - startOfZoneWidth] += qGray(image.pixel(x,y));//((image.pixel(x,y)))&0x000000FF;//+((image.pixel(x,y)>>8))&0x000000FF
-                         //+((image.pixel(x,y)>>16))&0x000000FF;//qGray(image.pixel(x,y));
-                 //graphBWA[x - startOfZoneWidth] += qGray(image.pixel(x,y));
-             }
-             graphBWA[x - startOfZoneWidth]/=(static_cast<double>(heightOfZone));
+                uchar* scan = image.scanLine(y);
+                int depth =4;
+                for(int x = startOfZoneWidth; x < widthOfImage - startOfZoneWidth - 1; x++)
+                {
+                     graphBWA[x-startOfZoneWidth]+= qGray(*(reinterpret_cast<QRgb*>(scan + x*depth)));
+                }
+
+            }
+
+
+            for(int i = 0; i < graphBWA.size(); i ++)
+            {
+                graphBWA[i] /= static_cast<double>(heightOfZone);
             }
 
 
@@ -214,53 +233,32 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
             {
                 for(int shift = minShiftOfCalc; shift < maxShiftOfCalc; shift++)
                 {
-
-
-                        double int1=0,int2=0/*,int1b = 0, int2b = 0*/;
+                        double int1=0,int2=0;//int1b = 0, int2b = 0;
                         if(shift<0)
                         {
-                            for(int i = 0 ; i < graphDerivative.size(); i++)
+                            for(int i = 0 ; i < graphDerivative.size()+shift; i++)
                             {
-                                if((i+shift)>0 && (i+shift)<graphDerivative.size())
-                                {
-                                    graphDiscrepancy[shift+graphDerivative.size()] += (m_previousGraphDerivative[i] - graphDerivative[i + shift])  *  (m_previousGraphDerivative[i] - graphDerivative[i + shift]);
-                                    int1 += m_previousGraphDerivative[i]*m_previousGraphDerivative[i];
-                                    int2 += graphDerivative[i + shift]*graphDerivative[i + shift];
-
-                                    //graphDiscrepancyColor[shift+graphBWA.size()-1] += (m_previousGraphBWA[i] - graphBWA[i + shift])  *  (m_previousGraphBWA[i] - graphBWA[i + shift]);
-//                                    int1b += m_previousGraphBWA[i]*m_previousGraphBWA[i];
-//                                    int2b += graphBWA[i + shift]*graphBWA[i + shift];
-                                }
+                                graphDiscrepancy[shift+graphDerivative.size()] += (m_previousGraphDerivative[i-shift] - graphDerivative[i])  *  (m_previousGraphDerivative[i-shift] - graphDerivative[i]);
+                                int1 += m_previousGraphDerivative[i-shift]*m_previousGraphDerivative[i-shift];
+                                int2 += graphDerivative[i]*graphDerivative[i];
                             }
+
                         }
                         else
                         {
-                            for(int i = 0; i < graphDerivative.size(); i++)
+                            for(int i = shift; i < graphDerivative.size(); i++)
                             {
-                                if((i+shift)>0 && (i+shift)<graphDerivative.size())
-                                {
-                                    graphDiscrepancy[shift + graphDerivative.size()] += (m_previousGraphDerivative[i] - graphDerivative[i + shift])*(m_previousGraphDerivative[i] - graphDerivative[i + shift]);
-                                    int1 += m_previousGraphDerivative[i]*m_previousGraphDerivative[i];
-                                    int2 += graphDerivative[i + shift]*graphDerivative[i + shift];
-
-                                    //graphDiscrepancyColor[shift + graphBWA.size()-1] += (m_previousGraphBWA[i] - graphBWA[i + shift])*(m_previousGraphBWA[i] - graphBWA[i + shift]);
-//                                    int1b += m_previousGraphBWA[i]*m_previousGraphBWA[i];
-//                                    int2b += graphBWA[i + shift]*graphBWA[i + shift];
-                                }
+                                graphDiscrepancy[shift + graphDerivative.size()] += (m_previousGraphDerivative[i-shift] - graphDerivative[i])*(m_previousGraphDerivative[i-shift] - graphDerivative[i]);
+                                int1 += m_previousGraphDerivative[i-shift]*m_previousGraphDerivative[i-shift];
+                                int2 += graphDerivative[i]*graphDerivative[i];
                             }
+
                         }
                         //нормируем на интегралы
                         if(int1*int2>0)
                             graphDiscrepancy[shift+graphDerivative.size()] /= (int1*int2);
                         else
                             graphDiscrepancy[shift+graphDerivative.size()] = NAN;//из-за этого в консоли выскакивают nan, но это убирает завалы невязки))
-
-//                        if(int1b*int2b>0)
-//                            graphDiscrepancyColor[shift+graphBWA.size()] /= (int1b*int2b);
-//                        else
-//                            graphDiscrepancyColor[shift+graphBWA.size()] = NAN;//из-за этого в консоли выскакивают nan, но это убирает завалы невязки))
-
-
 
                 }
             }
@@ -397,7 +395,7 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
 //    qDebug()<<t3;
 
 
-//    emit frameProcessed(graphDerivative, graphDiscrepancy, m_previousGraphDerivative, shiftOfDis, m_counterFrame, shiftOfDisColor, graphBWA, m_previousGraphBWA , graphDiscrepancyColor);
+//    emit frameProcessed(graphDerivative, graphDiscrepancy, m_previousGraphDerivative, shiftOfDis, m_counterFrame);
 
     m_previousGraphDerivative = graphDerivative;
     //m_previousGraphBWA = graphBWA;

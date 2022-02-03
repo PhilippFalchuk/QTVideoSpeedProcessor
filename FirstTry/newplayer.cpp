@@ -176,7 +176,7 @@ NewPlayer::NewPlayer(QWidget *parent)
     connect(m_threadHandler, SIGNAL(updatelineedit(int)), this, SLOT(updatelineedit(int)));
     m_videoProbe->setSource(m_player);
 
-    connect(m_threadHandler, SIGNAL(frameReady(QVector<double>, QVector<double>, QVector<double>, int, int, int,QVector<double>,QVector<double>,QVector<double>)), this, SLOT(processChart(QVector<double>, QVector<double>, QVector<double>, int, int, int,QVector<double>,QVector<double>,QVector<double>)));
+    connect(m_threadHandler, SIGNAL(frameReady(QVector<double>,QVector<double>,QVector<double>, int, int)), this, SLOT(processChart(QVector<double>,QVector<double>,QVector<double>, int, int)));
     connect(m_threadHandler, SIGNAL(maskReady(QImage)), this, SLOT(displayMask(QImage)));
 
     connect(this, SIGNAL(zoneChanged(int,int,int)), m_threadHandler,SLOT(setZone(int,int,int)));
@@ -209,7 +209,7 @@ NewPlayer::NewPlayer(QWidget *parent)
         while(!fileIn.atEnd())
         {
             QString line = in.readLine();
-            m_pathToUrl = line;
+            m_url = line;
         }
     }
     //qDebug()<< QDir::currentPath();
@@ -227,7 +227,7 @@ void NewPlayer::on_pushButton_clicked()
 {
     if(QFile::exists(m_pathToUrl))
     {
-    m_player->setMedia(QUrl(m_pathToUrl));
+    m_player->setMedia(QUrl(m_url));
     m_player->play();
     }
     else
@@ -251,10 +251,10 @@ void NewPlayer::updatelineedit(int a)
     ui->lineEdit->setText(str);
 }
 
-void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> graphDiscrepancy,QVector<double> graphPreviousDerivative, int shift, int framesCount, int shiftColor,QVector<double> graphBWA, QVector<double> graphPreviousBWA, QVector<double> graphDiscrepancyBWA)
+void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> graphDiscrepancy,QVector<double> graphPreviousDerivative, int shift, int framesCount)
 {
     ui->label->setText(QString::number(shift));
-    shiftBuffer(shift, framesCount, shiftColor);
+    shiftBuffer(shift, framesCount);
 
 
 //    m_seriesDerivative->clear();
@@ -279,8 +279,8 @@ void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> gr
         pointDerivativeVector[counter] = QPointF(counter, graphDerivative[counter]);
         pointPreviousDerivativeVector[counter] = QPointF(counter, graphPreviousDerivative[counter]);
 
-        pointColorVector[counter] = QPointF(counter, graphBWA[counter]);
-        pointPreviousColorVector[counter] = QPointF(counter, graphPreviousBWA[counter]);
+        //pointColorVector[counter] = QPointF(counter, graphBWA[counter]);
+       // pointPreviousColorVector[counter] = QPointF(counter, graphPreviousBWA[counter]);
     }
     for(int counter = 0; counter < graphDiscrepancy.size(); counter++)
     {
@@ -290,11 +290,11 @@ void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> gr
 
         graphDiscrepancy[counter] = qLn(graphDiscrepancy[counter]);
 
-       graphDiscrepancyBWA[counter] = qLn(graphDiscrepancyBWA[counter]);
+       //graphDiscrepancyBWA[counter] = qLn(graphDiscrepancyBWA[counter]);
 
         pointDiscrepancyVector[counter] = QPointF(counter, graphDiscrepancy[counter]);
 
-        pointDiscrepancyColorVector[counter] = QPointF(counter, graphDiscrepancyBWA[counter]);
+        //pointDiscrepancyColorVector[counter] = QPointF(counter, graphDiscrepancyBWA[counter]);
 
     }
 
@@ -308,9 +308,9 @@ void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> gr
     m_seriesPreviousDerivative->replace(pointPreviousDerivativeVector);
     m_seriesDiscrepancy->replace(pointDiscrepancyVector);
 
-    m_seriesColor->replace(pointColorVector);
-    m_seriesPreviousColor->replace(pointPreviousColorVector);
-    m_seriesDiscrepancyColor->replace(pointDiscrepancyColorVector);
+//    m_seriesColor->replace(pointColorVector);
+//    m_seriesPreviousColor->replace(pointPreviousColorVector);
+//    m_seriesDiscrepancyColor->replace(pointDiscrepancyColorVector);
 
 
 
@@ -318,7 +318,7 @@ void NewPlayer::processChart(QVector<double> graphDerivative, QVector<double> gr
 }
 
 
-void NewPlayer::shiftBuffer(int shift, int framesCount, int shiftColor)
+void NewPlayer::shiftBuffer(int shift, int framesCount)
 {
 //    if(m_bufferCounter%2)
 //        shift = 50;
@@ -353,7 +353,7 @@ void NewPlayer::shiftBuffer(int shift, int framesCount, int shiftColor)
     }
 
     m_bufferSeries->append(m_bufferCounter%400, shift);
-    m_bufferSeriesColor->append(m_bufferCounter%400, shiftColor);
+    //m_bufferSeriesColor->append(m_bufferCounter%400, shiftColor);
 
 //    int g;
 //    if(m_bufferCounter%2)
@@ -387,21 +387,21 @@ void NewPlayer::on_editZone_clicked()
     int height = ui->spinBox_2->value();
     int widthOfDis = ui->spinBox_3->value();
 
-    m_axisDerX->setRange(0, width -1);
-    m_axisPrevDerX->setRange(0, width -1);
+//    m_axisDerX->setRange(0, width -1);
+//    m_axisPrevDerX->setRange(0, width -1);
 
-    if(!widthOfDis)
-    {
-        m_axisDisX->setRange((width*2)/4, ((width*2)/4)*3);
-        m_axisDisColorX->setRange((width*2)/4, ((width*2)/4)*3);
-        m_axisY->setRange( -(width*2)/4 , ((width*2)/4));
-    }
-    else
-    {
-        m_axisDisX->setRange(((width*2)-widthOfDis)/2, (width*2) - ((width*2)-widthOfDis)/2);
-        m_axisDisColorX->setRange(((width*2)-widthOfDis)/2, (width*2) - ((width*2)-widthOfDis)/2);
-        m_axisY->setRange( -(widthOfDis/2) , (widthOfDis/2));
-    }
+//    if(!widthOfDis)
+//    {
+//        m_axisDisX->setRange((width*2)/4, ((width*2)/4)*3);
+//        m_axisDisColorX->setRange((width*2)/4, ((width*2)/4)*3);
+//        m_axisY->setRange( -(width*2)/4 , ((width*2)/4));
+//    }
+//    else
+//    {
+//        m_axisDisX->setRange(((width*2)-widthOfDis)/2, (width*2) - ((width*2)-widthOfDis)/2);
+//        m_axisDisColorX->setRange(((width*2)-widthOfDis)/2, (width*2) - ((width*2)-widthOfDis)/2);
+//        m_axisY->setRange( -(widthOfDis/2) , (widthOfDis/2));
+//    }
 
 
 

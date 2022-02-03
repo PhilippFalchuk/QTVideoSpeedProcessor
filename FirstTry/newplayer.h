@@ -34,7 +34,7 @@ private slots:
 
 public slots:
     void updatelineedit(int);
-    void processChart(QVector<double>, QVector<double>, QVector<double>, int, int, int,QVector<double>,QVector<double>,QVector<double>);
+    void processChart(QVector<double> graphDerivative, QVector<double> graphDiscrepancy,QVector<double> graphPreviousDerivative, int shift, int framesCount);
     void displayMask(QImage);
 
 private:
@@ -73,12 +73,13 @@ private:
     ComPortThread m_comThread;
 
 
-    QString m_pathToUrl = QDir::currentPath() + "/urlEdit.txt";
+    QString m_pathToUrl = QDir::currentPath() + "./urlEdit.txt";
+    QString m_url;
 
 
 
 
-    void shiftBuffer(int, int, int);
+    void shiftBuffer(int, int);
 
 };
 #endif // NEWPLAYER_H

@@ -18,7 +18,7 @@ public slots:
     void processFrame(QVideoFrame frame, int, int, int);
 
 signals:
-    void frameProcessed(QVector<double>,QVector<double>,QVector<double>, int, int, int,QVector<double>,QVector<double>,QVector<double>);
+    void frameProcessed(QVector<double>,QVector<double>,QVector<double>, int, int);
     void shiftReady(int);
 
 private:
@@ -65,7 +65,7 @@ public slots:
     void setZone(int, int, int);
 
 signals:
-    void frameReady(QVector<double>, QVector<double>, QVector<double>, int, int, int,QVector<double>,QVector<double>,QVector<double>);
+    void frameReady(QVector<double>,QVector<double>,QVector<double>, int, int);
     void maskReady(QImage);
     void updatelineedit(int);
 
