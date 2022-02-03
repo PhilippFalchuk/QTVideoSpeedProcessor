@@ -41,8 +41,8 @@ void ThreadHandler::processFrame(const QVideoFrame &frame)
     QMetaObject::invokeMethod(&m_processor, "processFrame",
                               Qt::QueuedConnection, Q_ARG(QVideoFrame, frame), Q_ARG(int, m_zoneWidth), Q_ARG(int, m_zoneHeight), Q_ARG(int, m_widthOfDis));
 
-    QMetaObject::invokeMethod(&m_maskProcessor, "processMask",
-                              Qt::QueuedConnection, Q_ARG(QVideoFrame, frame), Q_ARG(int, m_zoneWidth), Q_ARG(int, m_zoneHeight));
+//    QMetaObject::invokeMethod(&m_maskProcessor, "processMask",
+//                              Qt::QueuedConnection, Q_ARG(QVideoFrame, frame), Q_ARG(int, m_zoneWidth), Q_ARG(int, m_zoneHeight));
 }
 
 void ThreadHandler::refreshCounter()
@@ -397,7 +397,7 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
 //    qDebug()<<t3;
 
 
-    emit frameProcessed(graphDerivative, graphDiscrepancy, m_previousGraphDerivative, shiftOfDis, m_counterFrame, shiftOfDisColor, graphBWA, m_previousGraphBWA , graphDiscrepancyColor);
+//    emit frameProcessed(graphDerivative, graphDiscrepancy, m_previousGraphDerivative, shiftOfDis, m_counterFrame, shiftOfDisColor, graphBWA, m_previousGraphBWA , graphDiscrepancyColor);
 
     m_previousGraphDerivative = graphDerivative;
     m_previousGraphBWA = graphBWA;
@@ -450,24 +450,21 @@ void MaskProcessor::processMask(QVideoFrame frame, int width, int height)
             QImage image/* = frame.image();*/(frame.bits(), frame.width(), frame.height(), imageFormat);
             image = image.convertToFormat(QImage::Format_RGB32);
 
-//            QRgb value = qRgba(255, 0, 255, 0);
+            QRgb value = qRgba(255, 0, 255, 0);
 
-//            for(int x = startOfMaskWidth; x < startOfMaskWidth + widthOfMask; x++)
-//            {
-//                for(int y = startOfMaskHeight; y < startOfMaskHeight + heightOfMask; y++)
-//                {
-//                    if((x == startOfMaskWidth) || (x == startOfMaskWidth + widthOfMask - 1))
-//                        image.setPixel(x,y,value);
 
-//                    if((y == startOfMaskHeight) || (y == startOfMaskHeight + heightOfMask - 1))
-//                        image.setPixel(x,y,value);
-//                }
-//            }
-            QPainter painter(&image);
-            painter.setBrush(Qt::NoBrush);
-            painter.setPen(Qt::red);
-            painter.drawRect(startOfMaskWidth,startOfMaskHeight,widthOfMask,heightOfMask);
-            painter.end();
+            for(int x = startOfMaskWidth; x < startOfMaskWidth + widthOfMask; x++)
+            {
+                image.setPixel(x,startOfMaskHeight,value);
+                image.setPixel(x,startOfMaskHeight + heightOfMask,value);
+            }
+
+            for(int y = startOfMaskHeight; y < startOfMaskHeight + heightOfMask; y++)
+            {
+                image.setPixel(startOfMaskWidth,y,value);
+                image.setPixel(startOfMaskWidth + widthOfMask,y,value);
+            }
+
 
             outImage = image;
         }
