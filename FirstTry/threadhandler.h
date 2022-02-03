@@ -23,7 +23,7 @@ signals:
 
 private:
     QVector<double> m_previousGraphDerivative;
-    QVector<double> m_previousGraphBWA;
+    //QVector<double> m_previousGraphBWA;
     int m_counterFrame = 0;
     int m_previousShift = 0;
     int m_counterImageVector = 0;
