@@ -73,7 +73,7 @@ private:
     ComPortThread m_comThread;
 
 
-    QString m_pathToUrl = QDir::currentPath() + "/release/urlEdit.txt";
+    QString m_pathToUrl = QDir::currentPath() + "/urlEdit.txt";
     QString m_url;
 
 

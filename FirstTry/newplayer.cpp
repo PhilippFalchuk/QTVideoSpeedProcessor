@@ -234,9 +234,9 @@ void NewPlayer::on_pushButton_clicked()
     }
     else
     {
-        qDebug() << "default";
-        m_player->setMedia(QUrl("rtsp://user:h5106120@192.168.0.228:554/ISAPI/Streaming/Channels/101"));
-        m_player->play();
+//        qDebug() << "default";
+//        m_player->setMedia(QUrl("rtsp://user:h5106120@192.168.0.228:554/ISAPI/Streaming/Channels/101"));
+//        m_player->play();
     }
 //    QPushButton *btn = new QPushButton(m_videoWidget);
 //    btn->setText("sdfasfasdfd\n\n\n\n\n\n\nfsadfasdfasffda");
