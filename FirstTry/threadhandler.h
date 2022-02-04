@@ -30,6 +30,7 @@ private:
     int m_counterZeroes = 0;
     bool m_recordStarted = false;
     QVector<QImage> m_mergedImageVector;
+    QString imagePathStr = QDir::currentPath() + "/";
 };
 
 

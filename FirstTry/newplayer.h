@@ -36,6 +36,7 @@ public slots:
     void updatelineedit(int);
     void processChart(QVector<double> graphDerivative, QVector<double> graphDiscrepancy,QVector<double> graphPreviousDerivative, int shift, int framesCount);
     void displayMask(QImage);
+    void onlyTextShift(int);
 
 private:
     Ui::NewPlayer *ui;

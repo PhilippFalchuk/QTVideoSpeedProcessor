@@ -40,6 +40,7 @@ void ComPortThread::run()
 {
     bool currentPortNameChanged = false;
     QSerialPort serial;
+    serial.setBaudRate(QSerialPort::Baud115200);
     QString currentPortName;
     int currentWaitTimeout = 1000;
     int currentRequest;
