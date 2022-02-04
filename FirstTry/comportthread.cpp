@@ -10,7 +10,14 @@ ComPortThread::ComPortThread(QObject *parent)
 ComPortThread::~ComPortThread()
 {
 
+    m_mutex.lock();
+    m_quit = true;
+    m_cond.wakeOne();
+    m_mutex.unlock();
+    wait();
+
 }
+
 void ComPortThread::changePort(const QString &portName)
 {
     m_portName = portName;
