@@ -60,7 +60,7 @@ void ComPortThread::run()
 
 
             const char requestData = currentRequest;
-            qDebug()<< requestData<< " " << currentRequest;
+            //qDebug()<< requestData<< " " << currentRequest;
             serial.write(&requestData,1);
 
             serial.waitForBytesWritten();

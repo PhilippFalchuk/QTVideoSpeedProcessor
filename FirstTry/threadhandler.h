@@ -15,7 +15,7 @@ class FrameProcessor : public QObject
 public:
     FrameProcessor(QObject *parent = nullptr);
 public slots:
-    void processFrame(QVideoFrame frame, int, int, int);
+    void processFrame(QVideoFrame frame, int, int, int,bool);
 
 signals:
     void frameProcessed(QVector<double>,QVector<double>,QVector<double>, int, int);
@@ -28,7 +28,8 @@ private:
     int m_previousShift = 0;
     int m_counterImageVector = 0;
     int m_counterZeroes = 0;
-    bool m_recordStarted = false;
+    bool m_minusRecordStarted = false;
+    bool m_plusRecordStarted = false;
     QVector<QImage> m_mergedImageVector;
     QString imagePathStr = QDir::currentPath() + "/";
 };
@@ -63,7 +64,7 @@ public:
 public slots:
     void processFrame(const QVideoFrame &frame);
     void refreshCounter();
-    void setZone(int, int, int);
+    void setZone(int, int, int, bool);
 
 signals:
     void frameReady(QVector<double>,QVector<double>,QVector<double>, int, int);
@@ -81,6 +82,7 @@ private:
     int m_zoneWidth = 0;
     int m_zoneHeight = 0;
     int m_widthOfDis = 0;
+    bool m_saverFlag = false;
 
 
     // QWidget interface

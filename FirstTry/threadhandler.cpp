@@ -39,7 +39,7 @@ void ThreadHandler::processFrame(const QVideoFrame &frame)
     m_fpsCounter++;
 
     QMetaObject::invokeMethod(&m_processor, "processFrame",
-                              Qt::QueuedConnection, Q_ARG(QVideoFrame, frame), Q_ARG(int, m_zoneWidth), Q_ARG(int, m_zoneHeight), Q_ARG(int, m_widthOfDis));
+                              Qt::QueuedConnection, Q_ARG(QVideoFrame, frame), Q_ARG(int, m_zoneWidth), Q_ARG(int, m_zoneHeight), Q_ARG(int, m_widthOfDis), Q_ARG(bool, m_saverFlag));
 
 //    QMetaObject::invokeMethod(&m_maskProcessor, "processMask",
 //                              Qt::QueuedConnection, Q_ARG(QVideoFrame, frame), Q_ARG(int, m_zoneWidth), Q_ARG(int, m_zoneHeight));
@@ -57,11 +57,12 @@ void ThreadHandler::refreshCounter()
     m_fpsCounter = 0;
 }
 
-void ThreadHandler::setZone(int width, int height, int widthOfDis)
+void ThreadHandler::setZone(int width, int height, int widthOfDis,bool saverFlag)
 {
     m_zoneWidth = width;
     m_zoneHeight = height;
     m_widthOfDis = widthOfDis;
+    m_saverFlag = saverFlag;
 }
 
 
@@ -91,7 +92,7 @@ QTime fromMSec( quint64 totalMsec )
     return QTime( hour, minute, sec, msec );
 }
 
-void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeight, int widthOfDis)
+void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeight, int widthOfDis, bool saverFlag)
 {
 //    QTime t1, t3;
 //    quint64 msec;
@@ -313,12 +314,12 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                if(m_counterFrame > 4)
+                if(m_counterFrame > 4 && saverFlag)
                 {
-                    if(shiftOfDis == 0 && m_recordStarted)
+                    if(shiftOfDis == 0 && (m_minusRecordStarted|| m_plusRecordStarted))
                         m_counterZeroes++;
 
-                    if( (/*m_previousShift > 3 || */m_previousShift < -3) && m_counterZeroes > 25)
+                    if( m_minusRecordStarted && m_counterZeroes > 25)
                     {
                         QImage mergedImage(4000,720,QImage::Format_RGB32);
                         mergedImage.fill(Qt::black);
@@ -326,7 +327,7 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
 //                        mergedImage.save(str, "BMP");
                         QPainter painter(&mergedImage);
 
-                        if(m_previousShift < -3)
+                        if(m_minusRecordStarted)
                         {
                             int pointerOfDrawing = 0;
                             for(int i = 0; i < m_counterImageVector; i++)
@@ -351,7 +352,9 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
 
                         m_previousShift = 0;
                         m_counterZeroes = 0;
-                        m_recordStarted = false;
+                        m_minusRecordStarted = false;
+
+                        m_counterImageVector = 0;
 
                     }
 
@@ -364,7 +367,7 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
 //                        qDebug() << str;
                         m_mergedImageVector[m_counterImageVector] = cropped;
                         m_counterImageVector++;
-                        m_recordStarted = true;
+                        m_minusRecordStarted = true;
                     }
 
 //                    if(shiftOfDis > 3)

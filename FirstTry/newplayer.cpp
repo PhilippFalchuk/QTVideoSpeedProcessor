@@ -179,7 +179,7 @@ NewPlayer::NewPlayer(QWidget *parent)
     connect(m_threadHandler, SIGNAL(frameReady(QVector<double>,QVector<double>,QVector<double>, int, int)), this, SLOT(processChart(QVector<double>,QVector<double>,QVector<double>, int, int)));
     connect(m_threadHandler, SIGNAL(maskReady(QImage)), this, SLOT(displayMask(QImage)));
 
-    connect(this, SIGNAL(zoneChanged(int,int,int)), m_threadHandler,SLOT(setZone(int,int,int)));
+    connect(this, SIGNAL(zoneChanged(int,int,int, bool)), m_threadHandler,SLOT(setZone(int,int,int, bool)));
 
 
 
@@ -389,6 +389,7 @@ void NewPlayer::on_editZone_clicked()
     int width = ui->spinBox->value();
     int height = ui->spinBox_2->value();
     int widthOfDis = ui->spinBox_3->value();
+    bool saverFlag = ui->spinBox_saver->value();
 
 //    m_axisDerX->setRange(0, width -1);
 //    m_axisPrevDerX->setRange(0, width -1);
@@ -409,7 +410,7 @@ void NewPlayer::on_editZone_clicked()
 
 
 
-    emit zoneChanged(width,height, widthOfDis);
+    emit zoneChanged(width,height, widthOfDis, saverFlag);
 
 }
 

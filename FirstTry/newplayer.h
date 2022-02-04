@@ -21,7 +21,7 @@ public:
     ~NewPlayer();
 
 signals:
-    void zoneChanged(int,int,int);
+    void zoneChanged(int,int,int, bool);
     void portChanged(const QString &portName);
 
 private slots:
