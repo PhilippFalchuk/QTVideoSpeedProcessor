@@ -36,6 +36,7 @@ public slots:
     void updatelineedit(int);
     void processChart(QVector<double>, QVector<double>, QVector<double>, int, int, int,QVector<double>,QVector<double>,QVector<double>);
     void displayMask(QImage);
+    void drawVerticalShift(int);
 
 private:
     Ui::NewPlayer *ui;

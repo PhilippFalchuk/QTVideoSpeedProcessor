@@ -184,6 +184,7 @@ NewPlayer::NewPlayer(QWidget *parent)
 
 
     ui->textBrowser->document()->setMaximumBlockCount(75);
+    ui->textBrowser_2->document()->setMaximumBlockCount(75);
 
     ui->imageLabel->setBackgroundRole(QPalette::Dark);
     ui->imageLabel->setScaledContents(true);
@@ -199,6 +200,7 @@ NewPlayer::NewPlayer(QWidget *parent)
     connect(this, &NewPlayer::portChanged, &m_comThread, &ComPortThread::changePort);
 
     connect(&m_threadHandler->m_processor, &FrameProcessor::shiftReady, &m_comThread, &ComPortThread::sendShift);
+    connect(&m_threadHandler->m_processor, &FrameProcessor::verticalShiftReady, this, &NewPlayer::drawVerticalShift);
 
 
     QFile fileIn(m_pathToUrl);
@@ -417,7 +419,12 @@ void NewPlayer::on_editZone_clicked()
 void NewPlayer::displayMask(QImage maskImage)
 {
     ui->imageLabel->setPixmap(QPixmap::fromImage(maskImage.mirrored(false,true)));
-//    qDebug << outputPixmap;
+    //    qDebug << outputPixmap;
+}
+
+void NewPlayer::drawVerticalShift(int shift)
+{
+    ui->textBrowser_2->append(QString::number(shift));
 }
 
 

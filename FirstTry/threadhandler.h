@@ -20,10 +20,12 @@ public slots:
 signals:
     void frameProcessed(QVector<double>,QVector<double>,QVector<double>, int, int, int,QVector<double>,QVector<double>,QVector<double>);
     void shiftReady(int);
+    void verticalShiftReady(int);
 
 private:
     QVector<double> m_previousGraphDerivative;
     QVector<double> m_previousGraphBWA;
+    QVector<double> m_previousGraphVerticalDerivative;
     int m_counterFrame = 0;
     int m_previousShift = 0;
     int m_counterImageVector = 0;

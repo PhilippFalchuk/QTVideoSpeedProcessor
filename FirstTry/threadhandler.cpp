@@ -143,6 +143,9 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
     int shiftOfDis;
     int shiftOfDisColor;
 
+    int indOfMinVerticalDis;
+    int shiftOfVerticalDis;
+
     int minShiftOfCalc;
     int maxShiftOfCalc;
     if(!widthOfDis)
@@ -265,6 +268,37 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
                 }
             }
 
+//            if(!m_previousGraphVerticalDerivative.isEmpty());
+//            {
+//                for(int shift = -(heightOfZone/2); shift < heightOfZone/2; shift++)
+//                {
+//                    double int1 = 0,int2 = 0;
+//                    if(shift<0)
+//                    {
+//                        for(int i=0; i < graphDerivativeVertical.size() + shift; i++)
+//                        {
+//                            graphDiscrepancyVertical[shift+graphDerivativeVertical.size()] += (m_previousGraphVerticalDerivative[i-shift] - graphDerivativeVertical[i]) * (m_previousGraphVerticalDerivative[i-shift] - graphDerivativeVertical[i]);
+//                            int1+= m_previousGraphVerticalDerivative[i-shift]*m_previousGraphVerticalDerivative[i-shift];
+//                            int2+= graphDerivativeVertical[i]*graphDerivativeVertical[i];
+//                        }
+//                    }
+//                    else
+//                    {
+//                        for(int i = shift; i < graphDerivativeVertical.size(); i ++)
+//                        {
+//                            graphDiscrepancyVertical[shift+graphDerivativeVertical.size()] += (m_previousGraphVerticalDerivative[i-shift] - graphDerivativeVertical[i])* (m_previousGraphVerticalDerivative[i-shift] - graphDerivativeVertical[i]);
+//                            int1+= m_previousGraphVerticalDerivative[i-shift]*m_previousGraphVerticalDerivative[i-shift];
+//                            int2+= graphDerivativeVertical[i]*graphDerivativeVertical[i];
+//                        }
+//                    }
+
+//                    if(int1*int2>0)
+//                        graphDiscrepancyVertical[shift + graphDerivativeVertical.size()] /= (int1*int2);
+//                    else
+//                        graphDiscrepancyVertical[shift + graphDerivativeVertical.size()] = NAN;
+//                }
+//            }
+
 
 //            int startOfCut = graphDiscrepancy.size()/4;
 //            int endOfCut = (graphDiscrepancy.size()*3)/4;
@@ -291,7 +325,7 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
 
 
 
-            if(!graphDiscrepancy.isEmpty())
+            if(!graphDiscrepancy.isEmpty() && !graphDiscrepancyVertical.isEmpty())
             {
                 qreal minValueOfDis = __DBL_MAX__;
                 qreal minValueOfDisColor = __DBL_MAX__;
@@ -313,54 +347,83 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
                 shiftOfDis = indOfMinDis - graphDerivative.size();
                 shiftOfDisColor = indOfMinDisColor - graphBWA.size()+1;
 
+
+//                qreal minValueOfVerticalDis = __DBL_MAX__;
+//                for(int i = -(heightOfZone/2) + graphDerivativeVertical.size() + 1; i < heightOfZone/2 + graphDerivativeVertical.size() -1;i++)
+//                {
+//                    if(graphDiscrepancyVertical[i]< minValueOfVerticalDis)
+//                    {
+//                        minValueOfVerticalDis = graphDerivativeVertical[i];
+//                        indOfMinVerticalDis = i;
+//                    }
+//                }
+
+//                shiftOfVerticalDis = indOfMinVerticalDis - graphDerivativeVertical.size();
+
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//                if(m_counterFrame > 4)
-//                {
-//                    if(shiftOfDis == 0 && m_recordStarted)
-//                        m_counterZeroes++;
+                if(m_counterFrame > 4)
+                {
+                    if(shiftOfDis == 0 && m_recordStarted)
+                        m_counterZeroes++;
 
-//                    if( (/*m_previousShift > 3 || */m_previousShift < -3) && m_counterZeroes > 25)
-//                    {
-//                        QImage mergedImage(4000,720,QImage::Format_RGB32);
-//                        mergedImage.fill(Qt::black);
-//                        QString str = QDir::homePath() + "/mergedImages/" + QString::number(m_counterFrame) + ".bmp";
-////                        mergedImage.save(str, "BMP");
-//                        QPainter painter(&mergedImage);
-
-//                        if(m_previousShift < -3)
-//                        {
-//                            int pointerOfDrawing = 0;
-//                            for(int i = 0; i < m_counterImageVector; i++)
-//                            {
-//                                painter.drawImage(pointerOfDrawing, 0, m_mergedImageVector[i]);
-//                                pointerOfDrawing += m_mergedImageVector[i].width();
-//                            }
-//                        }/*else if(m_previousShift > 3)
-//                        {
-//                            int pointerOfDrawing = mergedImage.width();
-//                            for(int i = m_counterImageVector - 1; i > 0 - 1; i--)
-//                            {
-//                                pointerOfDrawing -= m_mergedImageVector[i].width();
-//                                painter.drawImage(pointerOfDrawing, 0, m_mergedImageVector[i]);
-//                            }
-//                        }*/
-
+                    if( (/*m_previousShift > 3 || */m_previousShift < -3) && m_counterZeroes > 25)
+                    {
+                        QImage mergedImage(4000,720,QImage::Format_RGB32);
+                        mergedImage.fill(Qt::black);
+                        QString str = QDir::homePath() + "/mergedImages/" + QString::number(m_counterFrame) + ".bmp";
 //                        mergedImage.save(str, "BMP");
+                        QPainter painter(&mergedImage);
 
-//                        m_mergedImageVector.clear();
-//                        m_mergedImageVector.resize(200);
+                        if(m_previousShift < -3)
+                        {
+                            int pointerOfDrawing = 0;
+                            for(int i = 0; i < m_counterImageVector; i++)
+                            {
+                                painter.drawImage(pointerOfDrawing, 0, m_mergedImageVector[i]);
+                                pointerOfDrawing += m_mergedImageVector[i].width();
+                            }
+                        }/*else if(m_previousShift > 3)
+                        {
+                            int pointerOfDrawing = mergedImage.width();
+                            for(int i = m_counterImageVector - 1; i > 0 - 1; i--)
+                            {
+                                pointerOfDrawing -= m_mergedImageVector[i].width();
+                                painter.drawImage(pointerOfDrawing, 0, m_mergedImageVector[i]);
+                            }
+                        }*/
 
-//                        m_previousShift = 0;
-//                        m_counterZeroes = 0;
-//                        m_recordStarted = false;
+                        mergedImage.save(str, "BMP");
 
-//                    }
+                        m_mergedImageVector.clear();
+                        m_mergedImageVector.resize(200);
 
-//                    if(shiftOfDis < -3)
+                        m_previousShift = 0;
+                        m_counterZeroes = 0;
+                        m_recordStarted = false;
+
+                        m_counterImageVector = 0;
+
+                    }
+
+                    if(shiftOfDis < -3)
+                    {
+                        QImage cropped;
+                        cropped = image.copy(centerOfImageWidth + shiftOfDis, 0, -shiftOfDis, 720).mirrored(false,true);
+                        m_previousShift = shiftOfDis;
+//                        QString str = QDir::homePath() + "/images/" + QString::number(m_counterFrame) + ".bmp";
+//                        qDebug() << str;
+                        m_mergedImageVector[m_counterImageVector] = cropped;
+                        m_counterImageVector++;
+                        m_recordStarted = true;
+                    }
+
+//                    if(shiftOfDis > 3)
 //                    {
 //                        QImage cropped;
-//                        cropped = image.copy(centerOfImageWidth + shiftOfDis, 0, -shiftOfDis, 720).mirrored(false,true);
+//                        cropped = image.copy(centerOfImageWidth, 0, shiftOfDis, 720).mirrored(false,true);
 //                        m_previousShift = shiftOfDis;
 ////                        QString str = QDir::homePath() + "/images/" + QString::number(m_counterFrame) + ".bmp";
 ////                        qDebug() << str;
@@ -369,20 +432,8 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
 //                        m_recordStarted = true;
 //                    }
 
-////                    if(shiftOfDis > 3)
-////                    {
-////                        QImage cropped;
-////                        cropped = image.copy(centerOfImageWidth, 0, shiftOfDis, 720).mirrored(false,true);
-////                        m_previousShift = shiftOfDis;
-//////                        QString str = QDir::homePath() + "/images/" + QString::number(m_counterFrame) + ".bmp";
-//////                        qDebug() << str;
-////                        m_mergedImageVector[m_counterImageVector] = cropped;
-////                        m_counterImageVector++;
-////                        m_recordStarted = true;
-////                    }
 
-
-//                }
+                }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             }
@@ -401,8 +452,10 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
 
     m_previousGraphDerivative = graphDerivative;
     m_previousGraphBWA = graphBWA;
+    m_previousGraphVerticalDerivative = graphDerivativeVertical;
 
     emit shiftReady(shiftOfDis);
+    //emit verticalShiftReady(shiftOfVerticalDis);
 }
 
 FrameProcessor::FrameProcessor(QObject *parent)

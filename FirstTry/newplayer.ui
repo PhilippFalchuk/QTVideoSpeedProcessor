@@ -67,9 +67,9 @@
   <widget class="QTextBrowser" name="textBrowser">
    <property name="geometry">
     <rect>
-     <x>1070</x>
+     <x>1060</x>
      <y>-10</y>
-     <width>81</width>
+     <width>61</width>
      <height>1011</height>
     </rect>
    </property>
@@ -205,6 +205,16 @@
      </widget>
     </item>
    </layout>
+  </widget>
+  <widget class="QTextBrowser" name="textBrowser_2">
+   <property name="geometry">
+    <rect>
+     <x>1120</x>
+     <y>10</y>
+     <width>51</width>
+     <height>971</height>
+    </rect>
+   </property>
   </widget>
  </widget>
  <resources/>
