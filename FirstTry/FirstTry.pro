@@ -16,6 +16,7 @@ CONFIG += c++11
 
 SOURCES += \
     comportthread.cpp \
+    imagetcpserver.cpp \
     main.cpp \
     newplayer.cpp \
     threadhandler.cpp \
@@ -23,6 +24,7 @@ SOURCES += \
 
 HEADERS += \
     comportthread.h \
+    imagetcpserver.h \
     newplayer.h \
     threadhandler.h \
     videowidget.h

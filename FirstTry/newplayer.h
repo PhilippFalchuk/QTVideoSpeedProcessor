@@ -7,6 +7,7 @@
 #include <QVideoProbe>
 #include "threadhandler.h"
 #include "comportthread.h"
+#include "imagetcpserver.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class NewPlayer; }
@@ -72,6 +73,7 @@ private:
     QValueAxis *m_axisDisColorX = nullptr;
 
     ComPortThread m_comThread;
+    ImageTcpServer m_imageTcpServer;
 
 
     QString m_pathToUrl = QDir::currentPath() + "/urlEdit.txt";

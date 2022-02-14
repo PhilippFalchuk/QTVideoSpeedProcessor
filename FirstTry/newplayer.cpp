@@ -200,6 +200,7 @@ NewPlayer::NewPlayer(QWidget *parent)
 
     connect(&m_threadHandler->m_processor, &FrameProcessor::shiftReady, &m_comThread, &ComPortThread::sendShift);
    // connect(&m_threadHandler->m_processor, &FrameProcessor::shiftReady, this, &NewPlayer::onlyTextShift);
+    connect(&m_threadHandler->m_processor, &FrameProcessor::shiftReady, &m_imageTcpServer, &ImageTcpServer::writeToClient);
 
 
     QFile fileIn(m_pathToUrl);
