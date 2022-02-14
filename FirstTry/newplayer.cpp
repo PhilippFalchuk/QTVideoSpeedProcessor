@@ -10,18 +10,20 @@ NewPlayer::NewPlayer(QWidget *parent)
     , ui(new Ui::NewPlayer)
 {
     ui->setupUi(this);
-    m_videoWidget = new VideoWidget(this);
+    m_videoWidget = new VideoWidget();
     m_videoWidget->resize(200,200);
 
     m_player = new QMediaPlayer;
     m_player->setVideoOutput(m_videoWidget);
 
-    ui->horizontalLayout->addWidget(m_videoWidget);
-    m_videoWidget->setVisible(true);
+    //ui->horizontalLayout->addWidget(m_videoWidget);
+    //m_videoWidget->setVisible(true);
 
     m_threadHandler = new ThreadHandler();
 //    ui->verticalLayout->addWidget(m_fpsWidget);
 
+
+    {
     m_series = new QLineSeries();
     m_series->append(0, 6.7);
     m_series->append(40, 48);
@@ -160,6 +162,7 @@ NewPlayer::NewPlayer(QWidget *parent)
     m_bufferChartView = new QChartView(m_bufferChart);
     //graphChartViewDerivative->setRenderHint(QPainter::Antialiasing);
 
+
     //ui->horizontalLayout->addWidget(graphChartViewDerivative);
     ui->gridLayout->addWidget(graphChartViewDiscrepancy,1,1);
     ui->gridLayout->addWidget(graphChartViewDerivative,2,1);
@@ -170,7 +173,7 @@ NewPlayer::NewPlayer(QWidget *parent)
     ui->gridLayout_2->addWidget(graphChartViewColor,2,1);
     ui->gridLayout_2->addWidget(graphChartViewPreviousColor,3,1);
 
-
+}
     m_videoProbe = new QVideoProbe(this);
     connect(m_videoProbe, &QVideoProbe::videoFrameProbed, m_threadHandler, &ThreadHandler::processFrame);
     connect(m_threadHandler, SIGNAL(updatelineedit(int)), this, SLOT(updatelineedit(int)));
@@ -188,9 +191,6 @@ NewPlayer::NewPlayer(QWidget *parent)
     ui->imageLabel->setBackgroundRole(QPalette::Dark);
     ui->imageLabel->setScaledContents(true);
 
-
-
-
     const auto infos = QSerialPortInfo::availablePorts();
     for (const QSerialPortInfo &info : infos)
         ui->comboBox->addItem(info.portName());
@@ -199,7 +199,7 @@ NewPlayer::NewPlayer(QWidget *parent)
     connect(this, &NewPlayer::portChanged, &m_comThread, &ComPortThread::changePort);
 
     connect(&m_threadHandler->m_processor, &FrameProcessor::shiftReady, &m_comThread, &ComPortThread::sendShift);
-    connect(&m_threadHandler->m_processor, &FrameProcessor::shiftReady, this, &NewPlayer::onlyTextShift);
+   // connect(&m_threadHandler->m_processor, &FrameProcessor::shiftReady, this, &NewPlayer::onlyTextShift);
 
 
     QFile fileIn(m_pathToUrl);
@@ -216,7 +216,6 @@ NewPlayer::NewPlayer(QWidget *parent)
     //qDebug()<< QDir::currentPath();
     qDebug()<< m_pathToUrl;
     qDebug()<< m_url;
-
 
 }
 
@@ -327,7 +326,7 @@ void NewPlayer::shiftBuffer(int shift, int framesCount)
 //        shift = 50;
 //    else
 //        shift = -50;
-    ui->textBrowser->append(QString::number(shift) + "   " + QString::number(framesCount));
+    //ui->textBrowser->append(QString::number(shift) + "   " + QString::number(framesCount));
 
 
 
@@ -426,7 +425,7 @@ void NewPlayer::displayMask(QImage maskImage)
 
 void NewPlayer::onlyTextShift(int shift)
 {
-    ui->textBrowser->append(QString::number(shift));
+    //ui->textBrowser->append(QString::number(shift));
 }
 
 
