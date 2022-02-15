@@ -11,6 +11,7 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QStatusBar>
@@ -22,6 +23,7 @@ class Ui_TcpClienWimdow
 {
 public:
     QWidget *centralwidget;
+    QLabel *imageLabel;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -32,9 +34,13 @@ public:
         TcpClienWimdow->resize(800, 600);
         centralwidget = new QWidget(TcpClienWimdow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
+        imageLabel = new QLabel(centralwidget);
+        imageLabel->setObjectName(QString::fromUtf8("imageLabel"));
+        imageLabel->setGeometry(QRect(110, 80, 631, 441));
         TcpClienWimdow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(TcpClienWimdow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
+        menubar->setGeometry(QRect(0, 0, 800, 21));
         TcpClienWimdow->setMenuBar(menubar);
         statusbar = new QStatusBar(TcpClienWimdow);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
@@ -48,6 +54,7 @@ public:
     void retranslateUi(QMainWindow *TcpClienWimdow)
     {
         TcpClienWimdow->setWindowTitle(QCoreApplication::translate("TcpClienWimdow", "TcpClienWimdow", nullptr));
+        imageLabel->setText(QCoreApplication::translate("TcpClienWimdow", "TextLabel", nullptr));
     } // retranslateUi
 
 };

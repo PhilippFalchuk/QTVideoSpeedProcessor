@@ -58,4 +58,4 @@ namespace Ui {
 
 QT_END_NAMESPACE
 
-#endif // UI_TCPCLIENWIMDOW_H
+#endif // TcpClientWindowDOW_H

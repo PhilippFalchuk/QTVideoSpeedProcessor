@@ -1,11 +1,11 @@
-#include "tcpclienwimdow.h"
+#include "tcpclientwindow.h"
 
 #include <QApplication>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    TcpClienWimdow w;
+    TcpClientWindow w;
     w.show();
     return a.exec();
 }

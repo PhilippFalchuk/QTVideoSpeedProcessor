@@ -12,11 +12,11 @@ CONFIG += c++11
 SOURCES += \
     main.cpp \
     tcpclient.cpp \
-    tcpclienwimdow.cpp
+    tcpclientwindow.cpp
 
 HEADERS += \
     tcpclient.h \
-    tcpclienwimdow.h
+    tcpclientwindow.h
 
 FORMS += \
     tcpclienwimdow.ui

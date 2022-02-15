@@ -20,6 +20,7 @@ public slots:
 signals:
     void frameProcessed(QVector<double>,QVector<double>,QVector<double>, int, int);
     void shiftReady(int);
+    void imageReady(QImage dynamicImage);
 
 private:
     QVector<double> m_previousGraphDerivative;
@@ -47,6 +48,7 @@ public slots:
 
 signals:
     void maskProcessed(QImage);
+
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,6 +72,7 @@ signals:
     void frameReady(QVector<double>,QVector<double>,QVector<double>, int, int);
     void maskReady(QImage);
     void updatelineedit(int);
+    void imageAdheded(QImage dynamicImage);
 
 private:
     qint32 m_fpsCounter;

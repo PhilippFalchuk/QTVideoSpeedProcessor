@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QTcpServer>
 #include <QTcpSocket>
+#include <QImage>
 
 class ImageTcpServer : public QObject
 {
@@ -15,7 +16,7 @@ public slots:
     void onNewConnection();
     void onSocketStateChanged(QAbstractSocket::SocketState socketState);
     void onReadyRead();
-    void writeToClient(int shift);
+    void writeImageToClient(QImage dynamicImage);
 
 private:
     QTcpServer  m_server;

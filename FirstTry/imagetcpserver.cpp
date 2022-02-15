@@ -9,7 +9,7 @@ ImageTcpServer::ImageTcpServer(QObject *parent)
 {
     m_server.listen(QHostAddress::Any, 4242);
     connect(&m_server, &QTcpServer::newConnection, this, &ImageTcpServer::onNewConnection);
-    qDebug() << "server created " << m_server.serverAddress();
+    qDebug() << "server created " << m_server.serverAddress() << " server is listening: " << m_server.isListening();
 }
 
 void ImageTcpServer::onNewConnection()
@@ -27,8 +27,7 @@ void ImageTcpServer::onNewConnection()
 
 void ImageTcpServer::onSocketStateChanged(QAbstractSocket::SocketState socketState)
 {
-    if (socketState == QAbstractSocket::UnconnectedState)
-    {
+    if (socketState == QAbstractSocket::UnconnectedState){
         QTcpSocket* sender = static_cast<QTcpSocket*>(QObject::sender());
         m_sockets.removeOne(sender);
     }
@@ -39,11 +38,24 @@ void ImageTcpServer::onReadyRead()
 
 }
 
-void ImageTcpServer::writeToClient(int shift)
+void ImageTcpServer::writeImageToClient(QImage dynamicImage)
 {
+
+    qDebug() << dynamicImage;
+
     if(!(m_sockets.isEmpty())){
+        QByteArray block;
+        QDataStream out(&block, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_12);
+
+        out << qint64(0) << dynamicImage;
+        out.device()->seek(0);
+        out << (qint64)(block.size() - sizeof(qint64));
+
+
         for (QTcpSocket* socket : m_sockets){
-            socket->write(QByteArray::fromStdString(QString::number(shift).toStdString()));
+            socket->write(block);
+            socket->waitForBytesWritten(-1);
         }
     }else{
         qDebug() << "there are no clients connected currently";

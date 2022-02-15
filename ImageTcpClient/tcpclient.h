@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QTcpSocket>
+#include <QImage>
 
 class TcpClient : public QObject
 {
@@ -12,6 +13,9 @@ public:
 
 public slots:
     void onReadyRead();
+
+signals:
+    void gotImage(QImage recievedImage);
 
 private:
     QTcpSocket m_socket;
