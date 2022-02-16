@@ -14,9 +14,15 @@ TcpClient::TcpClient(QObject *parent)
 void TcpClient::onReadyRead()
 {
 
-    QImage recievedImage ( (uchar*)m_socket.readAll().data(), 4000,720, QImage::Format_RGB32);
+//    QImage recievedImage ( (uchar*)m_socket.readAll().data(), 4000,720, QImage::Format_RGB32);
 
-    emit gotImage(recievedImage);
+//    emit gotImage(recievedImage);
+
+    bool flag;
+    QByteArray ba;
+    QDataStream in(ba);
+    QImage temp;
+
 
 
 }

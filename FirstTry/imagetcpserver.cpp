@@ -45,12 +45,11 @@ void ImageTcpServer::writeImageToClient(QImage dynamicImage)
 
     if(!(m_sockets.isEmpty())){
         QByteArray block;
-        QDataStream out(&block, QIODevice::WriteOnly);
-        out.setVersion(QDataStream::Qt_5_12);
+        QDataStream data(&block, QIODevice::WriteOnly);
+        data.setVersion(QDataStream::Qt_5_12);
 
-        out << qint64(0) << dynamicImage;
-        out.device()->seek(0);
-        out << (qint64)(block.size() - sizeof(qint64));
+        data << dynamicImage << bool{1};
+
 
 
         for (QTcpSocket* socket : m_sockets){
