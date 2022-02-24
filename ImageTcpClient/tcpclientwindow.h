@@ -34,6 +34,5 @@ private:
 
     TcpClient m_tcpClient;
     QImage m_combinedImage = QImage();
-    int widthOfCombinedImage = 0;
 };
 #endif // TCPCLIENWIMDOW_H

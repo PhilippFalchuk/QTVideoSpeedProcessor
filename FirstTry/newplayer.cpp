@@ -218,6 +218,8 @@ NewPlayer::NewPlayer(QWidget *parent)
     qDebug()<< m_pathToUrl;
     qDebug()<< m_url;
 
+
+    ui->pushButton_2->setVisible(false);
 }
 
 NewPlayer::~NewPlayer()

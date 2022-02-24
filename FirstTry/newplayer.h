@@ -61,7 +61,7 @@ private:
     QLineSeries *m_seriesColor = nullptr;
     QLineSeries *m_seriesDiscrepancyColor = nullptr;
     QLineSeries *m_seriesPreviousColor = nullptr;
-    int m_bufferCounter = 0;
+    quint32 m_bufferCounter = 0;
     QChartView *m_bufferChartView = nullptr;
     QValueAxis *m_axisY = nullptr;
     QValueAxis *m_axisX = nullptr;

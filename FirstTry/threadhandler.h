@@ -25,10 +25,10 @@ signals:
 private:
     QVector<double> m_previousGraphDerivative;
     //QVector<double> m_previousGraphBWA;
-    int m_counterFrame = 0;
-    int m_previousShift = 0;
-    int m_counterImageVector = 0;
-    int m_counterZeroes = 0;
+    quint32 m_counterFrame = 0;
+    quint32 m_previousShift = 0;
+    quint32 m_counterImageVector = 0;
+    quint32 m_counterZeroes = 0;
     bool m_minusRecordStarted = false;
     bool m_plusRecordStarted = false;
     QVector<QImage> m_mergedImageVector;
@@ -75,7 +75,7 @@ signals:
     void imageAdheded(QImage dynamicImage);
 
 private:
-    qint32 m_fpsCounter;
+    quint32 m_fpsCounter;
     QThread m_processorThread;
     QThread m_maskThread;
     MaskProcessor m_maskProcessor;

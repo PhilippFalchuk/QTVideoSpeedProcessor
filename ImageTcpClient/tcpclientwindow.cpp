@@ -33,7 +33,7 @@ TcpClientWindow::~TcpClientWindow()
 
 void TcpClientWindow::onImageRecieved(QImage image)
 {
-    QImage tempImage = QImage(widthOfCombinedImage + image.width(), image.height(), QImage::Format_RGB32);
+    QImage tempImage = QImage(m_combinedImage.width() + image.width(), image.height(), QImage::Format_RGB32);
 
     QPainter painter(&tempImage);
 
@@ -44,18 +44,17 @@ void TcpClientWindow::onImageRecieved(QImage image)
     painter.drawImage(tempImage.width() - m_combinedImage.width() - image.width(), 0, image);
 
     m_combinedImage = tempImage;
-    widthOfCombinedImage = m_combinedImage.width();
 
 
     if(m_combinedImage.width() < 1000){
-        qDebug() << m_combinedImage;
+        //qDebug() << m_combinedImage;
         ui->imageLabel->setPixmap(QPixmap::fromImage(m_combinedImage));
         //QString str = QDir::homePath() + "/recievedImages/" + QDateTime::currentDateTime().toString("hh'h'mm'm'ss's'zzz'ms'") + ".bmp";
         //qDebug() << str;
         //m_combinedImage.save(str, "bmp");
     }else{
         m_combinedImage = QImage();
-        widthOfCombinedImage = 0;
+
     }
 }
 
