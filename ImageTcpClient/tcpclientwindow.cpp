@@ -1,5 +1,8 @@
 #include "tcpclientwindow.h"
 #include "ui_tcpclienwimdow.h"
+#include <QDir>
+#include <QDateTime>
+#include <QPainter>
 
 TcpClientWindow::TcpClientWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -9,8 +12,14 @@ TcpClientWindow::TcpClientWindow(QWidget *parent)
 
     connect(&m_tcpClient, &TcpClient::gotImage, this, &TcpClientWindow::onImageRecieved);
 
-            ui->imageLabel->setBackgroundRole(QPalette::Dark);
-            ui->imageLabel->setScaledContents(true);
+
+
+     qDebug() << QDateTime::currentDateTime().toString("ss:zzz");
+
+
+
+
+
 }
 
 TcpClientWindow::~TcpClientWindow()
@@ -21,6 +30,9 @@ TcpClientWindow::~TcpClientWindow()
 void TcpClientWindow::onImageRecieved(QImage image)
 {
     qDebug() << image;
-    //ui->imageLabel->setPixmap(QPixmap::fromImage(image));
+    ui->imageLabel->setPixmap(QPixmap::fromImage(image));
+    QString str = QDir::homePath() + "/recievedImages/" + QDateTime::currentDateTime().toString("hh'h'mm'm'ss's'zzz'ms'") + ".bmp";
+    qDebug() << str;
+    image.save(str, "bmp");
 }
 

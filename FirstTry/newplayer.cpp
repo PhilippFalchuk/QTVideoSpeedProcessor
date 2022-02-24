@@ -16,8 +16,8 @@ NewPlayer::NewPlayer(QWidget *parent)
     m_player = new QMediaPlayer;
     m_player->setVideoOutput(m_videoWidget);
 
-    //ui->horizontalLayout->addWidget(m_videoWidget);
-    //m_videoWidget->setVisible(true);
+    ui->horizontalLayout->addWidget(m_videoWidget);
+    m_videoWidget->setVisible(true);
 
     m_threadHandler = new ThreadHandler();
 //    ui->verticalLayout->addWidget(m_fpsWidget);
@@ -199,7 +199,7 @@ NewPlayer::NewPlayer(QWidget *parent)
     connect(this, &NewPlayer::portChanged, &m_comThread, &ComPortThread::changePort);
 
     connect(&m_threadHandler->m_processor, &FrameProcessor::shiftReady, &m_comThread, &ComPortThread::sendShift);
-   // connect(&m_threadHandler->m_processor, &FrameProcessor::shiftReady, this, &NewPlayer::onlyTextShift);
+    //connect(&m_threadHandler->m_processor, &FrameProcessor::shiftReady, this, &NewPlayer::onlyTextShift);
     connect(&m_threadHandler->m_processor, &FrameProcessor::imageReady, &m_imageTcpServer, &ImageTcpServer::writeImageToClient);
 
 
@@ -241,12 +241,16 @@ void NewPlayer::on_pushButton_clicked()
 //    QPushButton *btn = new QPushButton(m_videoWidget);
 //    btn->setText("sdfasfasdfd\n\n\n\n\n\n\nfsadfasdfasffda");
 //    btn->setVisible(true);
+    ui->pushButton->setVisible(false);
+    ui->pushButton_2->setVisible(true);
 }
 
 
 void NewPlayer::on_pushButton_2_clicked()
 {
     m_player->setMedia(QMediaContent());
+    ui->pushButton_2->setVisible(false);
+    ui->pushButton->setVisible(true);
 }
 void NewPlayer::updatelineedit(int a)
 {
@@ -426,7 +430,7 @@ void NewPlayer::displayMask(QImage maskImage)
 
 void NewPlayer::onlyTextShift(int shift)
 {
-    //ui->textBrowser->append(QString::number(shift));
+    ui->textBrowser->append(QString::number(shift));
 }
 
 

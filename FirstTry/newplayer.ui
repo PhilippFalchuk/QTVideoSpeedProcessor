@@ -77,10 +77,10 @@
   <widget class="QWidget" name="horizontalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>910</x>
+     <x>40</x>
      <y>20</y>
-     <width>31</width>
-     <height>41</height>
+     <width>661</width>
+     <height>331</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout"/>
@@ -190,10 +190,10 @@
   <widget class="QLabel" name="imageLabel">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>10</y>
-     <width>671</width>
-     <height>371</height>
+     <x>990</x>
+     <y>130</y>
+     <width>41</width>
+     <height>51</height>
     </rect>
    </property>
    <property name="text">

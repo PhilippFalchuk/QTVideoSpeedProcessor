@@ -2,6 +2,8 @@
 #include <QDebug>
 #include <QHostAddress>
 #include <QAbstractSocket>
+#include <QDir>
+#include <QDateTime>
 
 ImageTcpServer::ImageTcpServer(QObject *parent)
     : QObject{parent},
@@ -20,9 +22,9 @@ void ImageTcpServer::onNewConnection()
     connect(clientSocket, &QTcpSocket::stateChanged, this, &ImageTcpServer::onSocketStateChanged);
 
     m_sockets.push_back(clientSocket);
-    for (QTcpSocket* socket : m_sockets){
-        socket->write(QByteArray::fromStdString(clientSocket->peerAddress().toString().toStdString() + " connected to server !\n"));
-    }
+//    for (QTcpSocket* socket : m_sockets){
+//        socket->write(QByteArray::fromStdString(clientSocket->peerAddress().toString().toStdString() + " connected to server !\n"));
+//    }
 }
 
 void ImageTcpServer::onSocketStateChanged(QAbstractSocket::SocketState socketState)
@@ -40,23 +42,88 @@ void ImageTcpServer::onReadyRead()
 
 void ImageTcpServer::writeImageToClient(QImage dynamicImage)
 {
-
-    qDebug() << dynamicImage;
+    //qDebug() << "started sendin image" << QDir::homePath() + "/mergedImages/test123.bmp";
 
     if(!(m_sockets.isEmpty())){
-        QByteArray block;
-        QDataStream data(&block, QIODevice::WriteOnly);
-        data.setVersion(QDataStream::Qt_5_12);
-
-        data << dynamicImage << bool{1};
+        QByteArray ba;
+        QDataStream imgStream(&ba, QIODevice::ReadWrite);
 
 
+        imgStream << (quint32)0;
+        imgStream << dynamicImage;
 
-        for (QTcpSocket* socket : m_sockets){
-            socket->write(block);
+        imgStream.device()->seek(0);
+        imgStream << (quint32)(ba.size() - sizeof(quint32));
+
+        qDebug()<< "sent size " << (quint32)(ba.size() - sizeof(quint32));
+
+        for(QTcpSocket* socket : m_sockets){
+            socket->write(ba);
             socket->waitForBytesWritten(-1);
         }
+
     }else{
         qDebug() << "there are no clients connected currently";
     }
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//    quint32 sizeOfImg;
+
+//    imgStream >> sizeOfImg;
+
+//    QImage img;
+
+//    imgStream >> img;
+
+
+//    QString str = QDir::currentPath() + "/recievedImages/" + QDateTime::currentDateTime().toString("hh'h'mm'm'ss's'zzz'z'") + ".png";
+
+
+
+//    img.save(QDir::currentPath() + "/recievedImages/" + QDateTime::currentDateTime().toString("hh'h'mm'm'ss's'zzz'z'") + ".png", "png");
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//    QImage newImage = QImage::fromData(ba,"bmp");
+
+
+
+//   // qDebug() << newImage;
+
+//    newImage.save(QDir::homePath() + "/mergedImages/test123.bmp", "BMP");
+
+
+//    qDebug() << dynamicImage;
+
+//    if(!(m_sockets.isEmpty())){
+//        QByteArray block;
+//        QDataStream data(&block, QIODevice::WriteOnly);
+//        data.setVersion(QDataStream::Qt_5_12);
+
+//        data << dynamicImage << bool{1};
+
+
+
+//        for (QTcpSocket* socket : m_sockets){
+//            socket->write(block);
+//            socket->waitForBytesWritten(-1);
+//        }
+//    }else{
+//        qDebug() << "there are no clients connected currently";
+//    }
+
+//    if(!(m_sockets.isEmpty())){
+//    QByteArray block;
+
+//    block.append(qint16(dynamicImage.sizeInBytes()));
+//    block.append((char*)dynamicImage.bits(), dynamicImage.sizeInBytes());
+
+
+
+
+
 }

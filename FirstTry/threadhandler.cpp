@@ -338,6 +338,8 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
                                 painter.drawImage(pointerOfDrawing, 0, m_mergedImageVector[i]);
                                 pointerOfDrawing += m_mergedImageVector[i].width();
                             }
+                            //mergedImage = mergedImage.copy(0,0,pointerOfDrawing,720);
+                            //painter.end();
                         }/*else if(m_previousShift > 3)
                         {
                             int pointerOfDrawing = mergedImage.width();
@@ -348,10 +350,12 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
                             }
                         }*/
 
+
+
                         mergedImage.save(str, "BMP");
 
 
-                        emit imageReady(mergedImage);
+                        //emit imageReady(mergedImage);
 
                         m_mergedImageVector.clear();
                         m_mergedImageVector.resize(200);
@@ -374,6 +378,8 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
                         m_mergedImageVector[m_counterImageVector] = cropped;
                         m_counterImageVector++;
                         m_minusRecordStarted = true;
+
+                        emit imageReady(cropped);
                     }
 
 //                    if(shiftOfDis > 3)

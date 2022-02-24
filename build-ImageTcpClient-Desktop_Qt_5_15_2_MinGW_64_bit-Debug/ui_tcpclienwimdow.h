@@ -36,7 +36,7 @@ public:
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         imageLabel = new QLabel(centralwidget);
         imageLabel->setObjectName(QString::fromUtf8("imageLabel"));
-        imageLabel->setGeometry(QRect(110, 80, 631, 441));
+        imageLabel->setGeometry(QRect(210, 100, 441, 331));
         TcpClienWimdow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(TcpClienWimdow);
         menubar->setObjectName(QString::fromUtf8("menubar"));

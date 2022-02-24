@@ -19,6 +19,8 @@ signals:
 
 private:
     QTcpSocket m_socket;
+    quint32 sizeOfImageInBytes = 0;
+    QImage finalImage = QImage();
 
 };
 

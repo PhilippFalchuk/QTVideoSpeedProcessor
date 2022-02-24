@@ -1,6 +1,7 @@
 #include "tcpclient.h"
 
 #include <QHostAddress>
+#include <QTimer>
 
 
 TcpClient::TcpClient(QObject *parent)
@@ -14,15 +15,49 @@ TcpClient::TcpClient(QObject *parent)
 void TcpClient::onReadyRead()
 {
 
-//    QImage recievedImage ( (uchar*)m_socket.readAll().data(), 4000,720, QImage::Format_RGB32);
+//    qDebug() << m_socket.bytesAvailable() << " " << QImage(4000,720,QImage::Format_RGB32).sizeInBytes();
 
-//    emit gotImage(recievedImage);
+//    if(m_socket.bytesAvailable() >= QImage(4000,720,QImage::Format_RGB32).sizeInBytes())
+//    {
+//        qDebug() << "started image conversion";
+//        //QImage recievedImage(4000,720,QImage::Format_RGB32);
+//        QByteArray ba;
+//        ba = m_socket.readAll();
 
-    bool flag;
-    QByteArray ba;
-    QDataStream in(ba);
-    QImage temp;
+//        QImage image((uchar*)ba.data(), 4000,720, QImage::Format_RGB32);
+//        emit gotImage(image);
+
+//    }
+
+
+
+
+
+    QDataStream in(&m_socket);
+
+
+    if(sizeOfImageInBytes == 0){
+        if(m_socket.bytesAvailable() < sizeof(quint32))
+            return;
+        in >> sizeOfImageInBytes;
+        qDebug() << "size recieved " << sizeOfImageInBytes;
+    }
+
+
+    if(m_socket.bytesAvailable() < sizeOfImageInBytes)
+        return;
+
+    QImage im;
+
+    in >> im;
+
+    emit gotImage(im);
+
+    sizeOfImageInBytes = 0;
+
 
 
 
 }
+
+
