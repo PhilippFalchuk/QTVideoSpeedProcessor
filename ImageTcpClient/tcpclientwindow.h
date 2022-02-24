@@ -17,12 +17,23 @@ public:
     TcpClientWindow(QWidget *parent = nullptr);
     ~TcpClientWindow();
 
+signals:
+    void tcpStartButtonClicked();
+    void tcpStopButtonClicked();
+
 public slots:
     void onImageRecieved(QImage image);
+
+private slots:
+    void on_pushButton_clicked();
+
+    void on_pushButton_2_clicked();
 
 private:
     Ui::TcpClienWimdow *ui;
 
     TcpClient m_tcpClient;
+    QImage m_combinedImage = QImage();
+    int widthOfCombinedImage = 0;
 };
 #endif // TCPCLIENWIMDOW_H

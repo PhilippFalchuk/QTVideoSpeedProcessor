@@ -8,7 +8,7 @@ TcpClient::TcpClient(QObject *parent)
     : QObject{parent},
       m_socket(this)
 {
-    m_socket.connectToHost(QHostAddress("127.0.0.1"), 4242);
+
     connect(&m_socket, &QTcpSocket::readyRead, this, &TcpClient::onReadyRead);
 }
 
@@ -40,7 +40,7 @@ void TcpClient::onReadyRead()
         if(m_socket.bytesAvailable() < sizeof(quint32))
             return;
         in >> sizeOfImageInBytes;
-        qDebug() << "size recieved " << sizeOfImageInBytes;
+        //qDebug() << "size recieved " << sizeOfImageInBytes;
     }
 
 
@@ -58,6 +58,16 @@ void TcpClient::onReadyRead()
 
 
 
+}
+
+void TcpClient::formConnection()
+{
+    m_socket.connectToHost(QHostAddress("127.0.0.1"), 4242);
+}
+
+void TcpClient::toDisconnect()
+{
+    m_socket.disconnectFromHost();
 }
 
 

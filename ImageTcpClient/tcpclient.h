@@ -13,6 +13,8 @@ public:
 
 public slots:
     void onReadyRead();
+    void formConnection();
+    void toDisconnect();
 
 signals:
     void gotImage(QImage recievedImage);
