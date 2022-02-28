@@ -36,5 +36,6 @@ private:
     TcpClient m_tcpClient;
     QImage m_combinedImage = QImage();
     QLabel* m_imageLabel = nullptr;
+    quint32 m_maxWidthOfImage = 2000;
 };
 #endif // TCPCLIENWIMDOW_H
