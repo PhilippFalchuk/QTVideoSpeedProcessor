@@ -46,7 +46,7 @@
       <x>220</x>
       <y>0</y>
       <width>601</width>
-      <height>511</height>
+      <height>541</height>
      </rect>
     </property>
     <property name="widgetResizable">
@@ -58,7 +58,7 @@
        <x>0</x>
        <y>0</y>
        <width>599</width>
-       <height>509</height>
+       <height>539</height>
       </rect>
      </property>
     </widget>
