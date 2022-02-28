@@ -4,6 +4,7 @@
 #include "tcpclient.h"
 
 #include <QMainWindow>
+#include <QLabel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class TcpClienWimdow; }
@@ -34,5 +35,6 @@ private:
 
     TcpClient m_tcpClient;
     QImage m_combinedImage = QImage();
+    QLabel* m_imageLabel = nullptr;
 };
 #endif // TCPCLIENWIMDOW_H

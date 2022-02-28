@@ -10,6 +10,15 @@ TcpClientWindow::TcpClientWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    m_imageLabel = new QLabel();
+
+
+
+
+    ui->scrollArea->setWidget(m_imageLabel);
+    //ui->scrollArea->setWidgetResizable(true);
+
+
     connect(&m_tcpClient, &TcpClient::gotImage, this, &TcpClientWindow::onImageRecieved);
 
     connect(this, &TcpClientWindow::tcpStartButtonClicked, &m_tcpClient, &TcpClient::formConnection);
@@ -46,9 +55,9 @@ void TcpClientWindow::onImageRecieved(QImage image)
     m_combinedImage = tempImage;
 
 
-    if(m_combinedImage.width() < 1000){
+    if(m_combinedImage.width() < 10000){
         //qDebug() << m_combinedImage;
-        ui->imageLabel->setPixmap(QPixmap::fromImage(m_combinedImage));
+        m_imageLabel->setPixmap((QPixmap::fromImage(m_combinedImage)).scaledToHeight(m_imageLabel->height()));
         //QString str = QDir::homePath() + "/recievedImages/" + QDateTime::currentDateTime().toString("hh'h'mm'm'ss's'zzz'ms'") + ".bmp";
         //qDebug() << str;
         //m_combinedImage.save(str, "bmp");
@@ -61,7 +70,7 @@ void TcpClientWindow::onImageRecieved(QImage image)
 
 void TcpClientWindow::on_pushButton_clicked()
 {
-    ui->imageLabel->setPixmap(QPixmap::fromImage(QImage()));
+    m_imageLabel->setPixmap(QPixmap::fromImage(QImage()));
 
     emit tcpStartButtonClicked();
     ui->pushButton_2->setVisible(true);

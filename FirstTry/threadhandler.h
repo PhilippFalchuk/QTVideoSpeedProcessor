@@ -18,7 +18,6 @@ public slots:
     void processFrame(QVideoFrame frame, int, int, int,bool);
 
 signals:
-    void frameProcessed(QVector<double>,QVector<double>,QVector<double>, int, int);
     void shiftReady(int);
     void imageReady(QImage dynamicImage);
 
@@ -33,22 +32,6 @@ private:
     bool m_plusRecordStarted = false;
     QVector<QImage> m_mergedImageVector;
     QString imagePathStr = QDir::currentPath() + "/";
-};
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-class MaskProcessor : public QObject
-{
-    Q_OBJECT
-
-public slots:
-    void processMask(QVideoFrame, int, int);
-
-signals:
-    void maskProcessed(QImage);
-
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,15 +53,13 @@ public slots:
 
 signals:
     void frameReady(QVector<double>,QVector<double>,QVector<double>, int, int);
-    void maskReady(QImage);
+
     void updatelineedit(int);
     void imageAdheded(QImage dynamicImage);
 
 private:
     quint32 m_fpsCounter;
     QThread m_processorThread;
-    QThread m_maskThread;
-    MaskProcessor m_maskProcessor;
 
     QColor m_backgroundColor;
     int m_margin;
@@ -86,11 +67,6 @@ private:
     int m_zoneHeight = 0;
     int m_widthOfDis = 0;
     bool m_saverFlag = false;
-
-
-    // QWidget interface
-protected:
-    void paintEvent(QPaintEvent *event);
 };
 
 
