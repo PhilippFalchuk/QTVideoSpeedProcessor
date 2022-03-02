@@ -101,6 +101,7 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
         if(!frame.map(QAbstractVideoBuffer::ReadOnly))
             break;
 
+        qDebug() << frame.pixelFormat();
         QImage::Format imageFormat =QVideoFrame::imageFormatFromPixelFormat(frame.pixelFormat());
         if(imageFormat != QImage::Format_Invalid)
         {

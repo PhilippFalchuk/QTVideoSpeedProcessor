@@ -1,6 +1,7 @@
 #include "newplayer.h"
 #include "ui_newplayer.h"
 #include "videowidget.h"
+#include "videosurface.h"
 #include <QtMath>
 #include <QSerialPortInfo>
 #include <QFile>
@@ -10,11 +11,16 @@ NewPlayer::NewPlayer(QWidget *parent)
     , ui(new Ui::NewPlayer)
 {
     ui->setupUi(this);
+
+
     m_videoWidget = new VideoWidget();
     m_videoWidget->resize(200,200);
 
+    VideoSurface* videoSurface = new VideoSurface;
+
+
     m_player = new QMediaPlayer;
-    m_player->setVideoOutput(m_videoWidget);
+    m_player->setVideoOutput(/*m_videoWidget*/ videoSurface);
 
     ui->horizontalLayout->addWidget(m_videoWidget);
     m_videoWidget->setVisible(true);
@@ -22,28 +28,20 @@ NewPlayer::NewPlayer(QWidget *parent)
     m_threadHandler = new ThreadHandler();
 //    ui->verticalLayout->addWidget(m_fpsWidget);
 
-
-
     m_videoProbe = new QVideoProbe(this);
-    connect(m_videoProbe, &QVideoProbe::videoFrameProbed, m_threadHandler, &ThreadHandler::processFrame);
+
+    connect(videoSurface, &VideoSurface::frameAvailable, m_threadHandler, &ThreadHandler::processFrame);
+    //    connect(m_videoProbe, &QVideoProbe::videoFrameProbed, m_threadHandler, &ThreadHandler::processFrame);
+
     //connect(m_threadHandler, SIGNAL(updatelineedit(int)), this, SLOT(updatelineedit(int)));
     m_videoProbe->setSource(m_player);
 
-
-
     connect(this, SIGNAL(zoneChanged(int,int,int, bool)), m_threadHandler,SLOT(setZone(int,int,int, bool)));
-
-
-
-
-
-
 
 
     const auto infos = QSerialPortInfo::availablePorts();
     for (const QSerialPortInfo &info : infos)
         ui->comboBox->addItem(info.portName());
-
 
     connect(this, &NewPlayer::portChanged, &m_comThread, &ComPortThread::changePort);
 
@@ -67,7 +65,6 @@ NewPlayer::NewPlayer(QWidget *parent)
     qDebug()<< m_pathToUrl;
     qDebug()<< m_url;
 
-
     ui->pushButton_2->setVisible(false);
 }
 
@@ -79,15 +76,15 @@ NewPlayer::~NewPlayer()
 
 void NewPlayer::on_pushButton_clicked()
 {
-    if(QFile::exists(m_pathToUrl))
+    if(QFile::exists(m_pathToUrl) && m_url != "")
     {
     m_player->setMedia(QUrl(m_url));
     m_player->play();
     }
     else
     {
-//        m_player->setMedia(QUrl("rtsp://user:h5106120@192.168.0.228:554/ISAPI/Streaming/Channels/101"));
-//        m_player->play();
+        m_player->setMedia(QUrl("rtsp://user:h5106120@192.168.0.228:554/ISAPI/Streaming/Channels/101"));
+        m_player->play();
     }
 //    QPushButton *btn = new QPushButton(m_videoWidget);
 //    btn->setText("sdfasfasdfd\n\n\n\n\n\n\nfsadfasdfasffda");

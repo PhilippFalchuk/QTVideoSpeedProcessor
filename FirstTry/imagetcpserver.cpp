@@ -11,7 +11,7 @@ ImageTcpServer::ImageTcpServer(QObject *parent)
 {
     m_server.listen(QHostAddress::Any, 4242);
     connect(&m_server, &QTcpServer::newConnection, this, &ImageTcpServer::onNewConnection);
-    qDebug() << "server created " << m_server.serverAddress() << " server is listening: " << m_server.isListening();
+    qDebug() << "server created " << m_server.serverAddress() << " server is listening: " << m_server.isListening() << QHostAddress(QHostAddress::LocalHost);
 }
 
 void ImageTcpServer::onNewConnection()

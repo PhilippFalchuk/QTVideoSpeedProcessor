@@ -20,6 +20,7 @@ SOURCES += \
     main.cpp \
     newplayer.cpp \
     threadhandler.cpp \
+    videosurface.cpp \
     videowidget.cpp
 
 HEADERS += \
@@ -27,6 +28,7 @@ HEADERS += \
     imagetcpserver.h \
     newplayer.h \
     threadhandler.h \
+    videosurface.h \
     videowidget.h
 
 FORMS += \

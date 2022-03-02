@@ -37,7 +37,7 @@ void TcpClient::onReadyRead()
 
 void TcpClient::formConnection()
 {
-    m_socket.connectToHost(QHostAddress("127.0.0.1"), 4242);
+    m_socket.connectToHost(QHostAddress( "192.168.0.247" /*"127.0.0.1"*/ /*"192.168.0.224"*/), 4242);
 }
 
 void TcpClient::toDisconnect()
