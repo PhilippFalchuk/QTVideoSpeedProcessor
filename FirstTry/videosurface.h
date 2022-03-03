@@ -10,7 +10,7 @@ public:
     VideoSurface(QObject *parent = Q_NULLPTR);
     ~VideoSurface();
 
-    QList<QVideoFrame::PixelFormat> supportedPixelFormats(QAbstractVideoBuffer::HandleType hendleType = QAbstractVideoBuffer::NoHandle) const;
+    QList<QVideoFrame::PixelFormat> supportedPixelFormats(QAbstractVideoBuffer::HandleType handleType = QAbstractVideoBuffer::NoHandle) const;
     bool present(const QVideoFrame &frame);
 
 signals:
