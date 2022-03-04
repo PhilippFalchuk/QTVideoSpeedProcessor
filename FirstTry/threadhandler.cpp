@@ -131,9 +131,11 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
 
             if(!m_previousGraphDerivative.isEmpty()/* && !m_previousGraphBWA.isEmpty()*/)
             {
+                double int1=0,int2=0;
                 for(int shift = minShiftOfCalc; shift < maxShiftOfCalc; shift++)
                 {
-                        double int1=0,int2=0;//int1b = 0, int2b = 0;
+                        int1 = 0;
+                        int2 = 0;//int1b = 0, int2b = 0;
                         if(shift<0)
                         {
                             for(int i = 0 ; i < graphDerivative.size()+shift; i++)
@@ -180,13 +182,13 @@ void FrameProcessor::processFrame(QVideoFrame frame, int zoneWidth, int zoneHeig
                     if(shiftOfDis < -3)
                     {
                         QImage cropped;
-                        cropped = image.copy(centerOfImageWidth + shiftOfDis, 0, -shiftOfDis, 720).mirrored(true,true);
+                        cropped = image.copy(centerOfImageWidth + shiftOfDis, 0, -shiftOfDis, 720).mirrored(true,false);
                         emit imageReady(cropped);
                     }
                     if(shiftOfDis > 3)
                     {
                         QImage cropped;
-                        cropped = image.copy(centerOfImageWidth, 0, shiftOfDis, 720).mirrored(false,true);
+                        cropped = image.copy(centerOfImageWidth, 0, shiftOfDis, 720).mirrored(false,false);
                         emit imageReady(cropped);
                     }
                 }
