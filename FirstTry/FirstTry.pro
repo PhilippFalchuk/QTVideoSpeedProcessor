@@ -16,15 +16,19 @@ CONFIG += c++11
 
 SOURCES += \
     comportthread.cpp \
+    imagetcpserver.cpp \
     main.cpp \
     newplayer.cpp \
     threadhandler.cpp \
+    videosurface.cpp \
     videowidget.cpp
 
 HEADERS += \
     comportthread.h \
+    imagetcpserver.h \
     newplayer.h \
     threadhandler.h \
+    videosurface.h \
     videowidget.h
 
 FORMS += \

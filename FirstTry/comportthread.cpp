@@ -47,6 +47,7 @@ void ComPortThread::run()
 {
     bool currentPortNameChanged = false;
     QSerialPort serial;
+    serial.setBaudRate(QSerialPort::Baud115200);
     QString currentPortName;
     int currentWaitTimeout = 1000;
     int currentRequest;
@@ -66,7 +67,7 @@ void ComPortThread::run()
 
 
             const char requestData = currentRequest;
-            qDebug()<< requestData<< " " << currentRequest;
+            //qDebug()<< requestData<< " " << currentRequest;
             serial.write(&requestData,1);
 
             serial.waitForBytesWritten();

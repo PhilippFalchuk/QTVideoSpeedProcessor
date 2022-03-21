@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1774</width>
-    <height>973</height>
+    <width>770</width>
+    <height>551</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,20 +16,13 @@
   <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>740</x>
-     <y>0</y>
+     <x>520</x>
+     <y>380</y>
      <width>160</width>
      <height>108</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
-     <widget class="QLineEdit" name="lineEdit">
-      <property name="text">
-       <string>fps</string>
-      </property>
-     </widget>
-    </item>
     <item>
      <widget class="QPushButton" name="pushButton">
       <property name="text">
@@ -44,65 +37,26 @@
       </property>
      </widget>
     </item>
-    <item>
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>shift</string>
-      </property>
-     </widget>
-    </item>
    </layout>
-  </widget>
-  <widget class="QWidget" name="gridLayoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>50</x>
-     <y>390</y>
-     <width>491</width>
-     <height>621</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="gridLayout"/>
-  </widget>
-  <widget class="QTextBrowser" name="textBrowser">
-   <property name="geometry">
-    <rect>
-     <x>1060</x>
-     <y>-10</y>
-     <width>61</width>
-     <height>1011</height>
-    </rect>
-   </property>
   </widget>
   <widget class="QWidget" name="horizontalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>910</x>
+     <x>40</x>
      <y>20</y>
-     <width>31</width>
-     <height>41</height>
+     <width>661</width>
+     <height>331</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout"/>
   </widget>
-  <widget class="QWidget" name="horizontalLayoutWidget_2">
-   <property name="geometry">
-    <rect>
-     <x>1170</x>
-     <y>50</y>
-     <width>591</width>
-     <height>491</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_2"/>
-  </widget>
   <widget class="QWidget" name="verticalLayoutWidget_2">
    <property name="geometry">
     <rect>
-     <x>740</x>
-     <y>110</y>
+     <x>290</x>
+     <y>370</y>
      <width>207</width>
-     <height>148</height>
+     <height>150</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -152,6 +106,22 @@
      </widget>
     </item>
     <item>
+     <widget class="QSpinBox" name="spinBox_saver">
+      <property name="wrapping">
+       <bool>false</bool>
+      </property>
+      <property name="suffix">
+       <string/>
+      </property>
+      <property name="prefix">
+       <string>save img : </string>
+      </property>
+      <property name="maximum">
+       <number>1</number>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QPushButton" name="editZone">
       <property name="text">
        <string>edit</string>
@@ -160,35 +130,11 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="gridLayoutWidget_2">
-   <property name="geometry">
-    <rect>
-     <x>550</x>
-     <y>390</y>
-     <width>511</width>
-     <height>621</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="gridLayout_2"/>
-  </widget>
-  <widget class="QLabel" name="imageLabel">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>10</y>
-     <width>671</width>
-     <height>371</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>TextLabel</string>
-   </property>
-  </widget>
   <widget class="QWidget" name="gridLayoutWidget_3">
    <property name="geometry">
     <rect>
-     <x>760</x>
-     <y>260</y>
+     <x>30</x>
+     <y>380</y>
      <width>251</width>
      <height>121</height>
     </rect>
@@ -205,16 +151,6 @@
      </widget>
     </item>
    </layout>
-  </widget>
-  <widget class="QTextBrowser" name="textBrowser_2">
-   <property name="geometry">
-    <rect>
-     <x>1120</x>
-     <y>10</y>
-     <width>51</width>
-     <height>971</height>
-    </rect>
-   </property>
   </widget>
  </widget>
  <resources/>
